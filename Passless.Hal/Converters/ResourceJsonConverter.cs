@@ -175,10 +175,13 @@ namespace Passless.Hal.Converters
             {
                 // Data property of Resource<> cannot be null, so data is now never null.
                 data = resourceType.GetTypeInfo().GetDeclaredProperty(nameof(Resource<dynamic>.Data)).GetValue(resource);
-                dataType = data.GetType();
+                dataType = data?.GetType();
 
                 // TODO: This does not work for collections
-                dataContract = serializer.ContractResolver.ResolveContract(dataType) as JsonObjectContract;
+                if (data != null)
+                {
+                    dataContract = serializer.ContractResolver.ResolveContract(dataType) as JsonObjectContract;
+                }
             }
             else
             {
@@ -186,13 +189,6 @@ namespace Passless.Hal.Converters
                 dataType = resourceType;
                 dataContract = resourceContract;
             }
-
-            if (dataContract == null)
-            {
-                throw new JsonSerializationException("Could not resolve contract for the value to serialize.");
-            }
-
-            TypeInfo dataTypeInfo = dataType.GetTypeInfo();
 
             writer.WriteStartObject();
 
@@ -208,12 +204,20 @@ namespace Passless.Hal.Converters
                 WriteRelations(serializer, writer, resource.Embedded, resource.SingularRelations);
             }
 
-            foreach (var property in dataContract.Properties.Where(p => !Resource.ReservedProperties.Contains(p.PropertyName))
-                .Where(p => !p.Ignored && (p.ShouldSerialize == null || p.ShouldSerialize(data))))
+            if (data != null)
             {
-                writer.WritePropertyName(property.PropertyName);
-                var propertyValue = dataType.GetRuntimeProperty(property.UnderlyingName).GetValue(data);
-                serializer.Serialize(writer, propertyValue);
+                if (dataContract == null)
+                {
+                    throw new JsonSerializationException("Could not resolve contract for the HAL resource.");
+                }
+
+                foreach (var property in dataContract.Properties.Where(p => !Resource.ReservedProperties.Contains(p.PropertyName))
+                    .Where(p => !p.Ignored && (p.ShouldSerialize == null || p.ShouldSerialize(data))))
+                {
+                    writer.WritePropertyName(property.PropertyName);
+                    var propertyValue = dataType.GetRuntimeProperty(property.UnderlyingName).GetValue(data);
+                    serializer.Serialize(writer, propertyValue);
+                }
             }
 
             writer.WriteEndObject();

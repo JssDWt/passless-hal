@@ -28,6 +28,8 @@ namespace Example.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Person>> Get()
         {
+            // Note that this method returns Person objects, not IResource objects.
+            // These are converted into HAL resources in the ResourceFactory (see Startup.cs)
             return Ok(People);
         }
 
@@ -41,6 +43,8 @@ namespace Example.Controllers
                 return NotFound();
             }
 
+            // Note that this method returns a Person object, not an IResource object.
+            // This is converted into a HAL resource in the ResourceFactory (see Startup.cs)
             return Ok(person);
         }
 
@@ -54,6 +58,9 @@ namespace Example.Controllers
 
             person.Id = Interlocked.Increment(ref maxId);
             People.Add(person);
+
+            // Note that this method returns a Person object, not an IResource object.
+            // This is converted into a HAL resource in the ResourceFactory (see Startup.cs)
             return Created(Url.Action(nameof(Get), new { person.Id }), person);
         }
     }
