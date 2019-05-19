@@ -19,8 +19,9 @@ namespace Passless.Hal
             EmbeddedPropertyName 
         };
 
+        private string rel = "self";
         private ICollection<ILink> links;
-        private ICollection<IEmbeddedResource> embedded;
+        private ICollection<IResource> embedded;
         private ICollection<string> singularRelations;
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace Passless.Hal
         /// </summary>
         /// <param name="singularRelations">Singular relations.</param>
         protected Resource(ICollection<string> singularRelations)
-            : this(singularRelations, new List<ILink>(), new List<IEmbeddedResource>())
+            : this(singularRelations, new List<ILink>(), new List<IResource>())
         {
 
         }
@@ -48,7 +49,7 @@ namespace Passless.Hal
         /// </summary>
         /// <param name="links">The links for the current resource.</param>
         /// <param name="embedded">The embedded resources for the current resource.</param>
-        protected Resource(ICollection<ILink> links, ICollection<IEmbeddedResource> embedded)
+        protected Resource(ICollection<ILink> links, ICollection<IResource> embedded)
             : this(DefaultSingularRelations, links, embedded)
         {
 
@@ -63,7 +64,7 @@ namespace Passless.Hal
         protected Resource(
             ICollection<string> singularRelations, 
             ICollection<ILink> links, 
-            ICollection<IEmbeddedResource> embedded)
+            ICollection<IResource> embedded)
         {
             this.singularRelations = singularRelations
                 ?? throw new ArgumentNullException(nameof(singularRelations));
@@ -73,10 +74,16 @@ namespace Passless.Hal
                 ?? throw new ArgumentNullException(nameof(embedded));
         }
 
+        public string Rel 
+        {
+            get => this.rel;
+            set => this.rel = value
+                ?? throw new ArgumentNullException(nameof(Rel));
+        }
+
         /// <summary>
         /// Gets the links for the current resource. Containing related links to other resources.
         /// </summary>
-
         public ICollection<ILink> Links
         {
             get => this.links;
@@ -91,8 +98,7 @@ namespace Passless.Hal
         /// Gets embedded resource, accompanied by the current resource, as a full, partial, 
         /// or inconsistent version of the representations served from the target Uri.
         /// </summary>
-
-        public ICollection<IEmbeddedResource> Embedded
+        public ICollection<IResource> Embedded
         {
             get => this.embedded;
             set

@@ -15,7 +15,7 @@ using Passless.Hal.Extensions;
 
 namespace Passless.Hal.Formatters
 {
-    public class HalJsonOutputFormatter : JsonOutputFormatter
+    public class HalJsonOutputFormatter : JsonOutputFormatter, IHalFormatter
     {
         private HalOptions options;
         private IUrlHelperFactory urlHelperFactory;

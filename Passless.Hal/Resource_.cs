@@ -55,7 +55,7 @@ namespace Passless.Hal
         public Resource(
             T data,
             ICollection<ILink> links,
-            ICollection<IEmbeddedResource> embedded)
+            ICollection<IResource> embedded)
             : base(links, embedded)
         {
             this.Construct(data);
@@ -73,7 +73,7 @@ namespace Passless.Hal
             T data,
             ICollection<string> singularRelations,
             ICollection<ILink> links,
-            ICollection<IEmbeddedResource> embedded)
+            ICollection<IResource> embedded)
             : base(singularRelations, links, embedded)
         {
             this.Construct(data);

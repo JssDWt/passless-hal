@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
+using Passless.Hal.Filters;
 using Passless.Hal.Formatters;
 
 namespace Passless.Hal.Extensions
@@ -46,6 +47,9 @@ namespace Passless.Hal.Extensions
                     this.charPool,
                     this.halOptions,
                     this.urlHelperFactory));
+
+            //options.Filters.Add(new HalResourceActionFilter());
+            //options.Filters.Add(new HalEmbedResourceFilter(urlHelperFactory));
         }
     }
 }

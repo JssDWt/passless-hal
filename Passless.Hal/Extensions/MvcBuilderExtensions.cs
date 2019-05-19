@@ -34,6 +34,9 @@ namespace Passless.Hal.Extensions
             // registers the custom formatter(s)
             builder.Services.ConfigureOptions<HalMvcSetup>();
 
+            // Wrap the existing actionresultexecutor in the hal executor.
+            builder.Services.Decorate<IActionResultExecutor<ObjectResult>, HalObjectResultExecutor>();
+
             return builder;
         }
     }
