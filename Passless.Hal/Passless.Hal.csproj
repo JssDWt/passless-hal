@@ -16,7 +16,6 @@
     <Folder Include="Extensions\" />
     <Folder Include="Formatters\" />
     <Folder Include="Attributes\" />
-    <Folder Include="Filters\" />
     <Folder Include="Internal\" />
   </ItemGroup>
 </Project>

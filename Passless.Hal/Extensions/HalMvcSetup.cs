@@ -47,9 +47,6 @@ namespace Passless.Hal.Extensions
                     this.charPool,
                     this.halOptions,
                     this.urlHelperFactory));
-
-            //options.Filters.Add(new HalResourceActionFilter());
-            //options.Filters.Add(new HalEmbedResourceFilter(urlHelperFactory));
         }
     }
 }
