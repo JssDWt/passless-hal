@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Passless.Hal.Attributes
+namespace Passless.Hal
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
     public class HalEmbedActionAttribute : HalEmbedAttribute

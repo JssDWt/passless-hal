@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Example.Models;
 using Microsoft.AspNetCore.Mvc;
-using Passless.Hal.Attributes;
+using Passless.Hal;
 
 namespace Example.Controllers
 {

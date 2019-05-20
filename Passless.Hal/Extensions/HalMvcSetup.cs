@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
-using Passless.Hal.Filters;
 using Passless.Hal.Formatters;
 
 namespace Passless.Hal.Extensions
@@ -22,8 +17,7 @@ namespace Passless.Hal.Extensions
         public HalMvcSetup(
             IOptions<HalOptions> halOptions,
             IOptions<MvcJsonOptions> jsonOptions,
-            ArrayPool<char> charPool,
-            IUrlHelperFactory urlHelperFactory)
+            ArrayPool<char> charPool)
         {
             this.halOptions = halOptions?.Value
                 ?? throw new ArgumentNullException(nameof(halOptions));
@@ -31,8 +25,6 @@ namespace Passless.Hal.Extensions
                 ?? throw new ArgumentNullException(nameof(jsonOptions));
             this.charPool = charPool 
                 ?? throw new ArgumentNullException(nameof(charPool));
-            this.urlHelperFactory = urlHelperFactory
-                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
         }
 
         public void Configure(MvcOptions options)
@@ -45,8 +37,7 @@ namespace Passless.Hal.Extensions
                 new HalJsonOutputFormatter(
                     this.jsonOptions.SerializerSettings,
                     this.charPool,
-                    this.halOptions,
-                    this.urlHelperFactory));
+                    this.halOptions));
         }
     }
 }

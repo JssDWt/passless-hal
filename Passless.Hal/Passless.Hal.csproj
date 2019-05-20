@@ -15,7 +15,7 @@
     <Folder Include="Streaming\" />
     <Folder Include="Extensions\" />
     <Folder Include="Formatters\" />
-    <Folder Include="Attributes\" />
     <Folder Include="Internal\" />
+    <Folder Include="Factories\" />
   </ItemGroup>
 </Project>

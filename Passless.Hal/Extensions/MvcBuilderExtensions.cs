@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Passless.Hal.Factories;
 
 namespace Passless.Hal.Extensions
 {
@@ -20,16 +21,17 @@ namespace Passless.Hal.Extensions
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            if (halOptionsBuilder == null)
-            {
-                halOptionsBuilder = o => { };
-            }
-
             // Make sure the custom formatters can access the action context.
             builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-            // Add the options to HalMvcSetup
-            builder.Services.Configure(halOptionsBuilder);
+            // Inject the default resource builder.
+            builder.Services.AddSingleton<IHalResourceFactoryMetadata, AttributeEmbedHalResourceFactory>();
+            builder.Services.ConfigureOptions<HalSetup>();
+
+            if (halOptionsBuilder != null)
+            {
+                builder.Services.Configure(halOptionsBuilder);
+            }
 
             // registers the custom formatter(s)
             builder.Services.ConfigureOptions<HalMvcSetup>();
