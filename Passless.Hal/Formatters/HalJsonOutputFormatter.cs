@@ -38,19 +38,6 @@ namespace Passless.Hal.Formatters
             }
         }
 
-        protected override bool CanWriteType(Type type)
-        {
-            // Called when IActionResult is returned
-            return base.CanWriteType(type);
-        }
-
-
-        public override bool CanWriteResult(OutputFormatterCanWriteContext context)
-        {
-            // Called when an object is returned from an action
-            return base.CanWriteResult(context);
-        }
-
         protected override JsonSerializer CreateJsonSerializer()
         {
             var serializer = base.CreateJsonSerializer();
