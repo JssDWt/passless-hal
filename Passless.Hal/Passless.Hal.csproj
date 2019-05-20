@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Converters\" />
-    <Folder Include="Streaming\" />
     <Folder Include="Extensions\" />
     <Folder Include="Formatters\" />
     <Folder Include="Internal\" />
