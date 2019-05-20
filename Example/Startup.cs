@@ -27,29 +27,11 @@ namespace Example
                 .AddHal(options =>
                 {
                     options.SupportedMediaTypes.Add("application/vnd-hal+json");
-                    //options.ResourceFactory = async (obj, context, urlHelper) =>
-                    //{
-                    //    // This factory method (ResourceFactory) is called whenever an object will be serialized
-                    //    // to return to the client. You can create IResource objects here,
-                    //    // instead of inside your controllers, to decouple HAL from your controllers
-                    //    // completely. This example sets the self link for every returned object.
-                    //    // You can make this logic as complex as you'd want.
 
-                    //    var resource = obj as IResource;
-                    //    if (resource == null)
-                    //    {
-                    //        resource = new Resource<object>(obj);
-                    //    }
-
-                    //    // Add the self link.
-                    //    resource.Links.Add(new Link
-                    //    {
-                    //        Rel = "self",
-                    //        HRef = urlHelper.Action()
-                    //    });
-
-                    //    return resource;
-                    //};
+                    // Optionally add custom resource factories here, in order to
+                    // create resources from your returned actionresults.
+                    // By default, the AttributeEmbedHalResourceFactory is present.
+                    // options.ResourceFactories.Add(new MyCustomResourceFactory());
                 });
 
             // Instead of adding a ResourceFactory in the AddHal method, you
@@ -63,6 +45,10 @@ namespace Example
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseDeveloperExceptionPage();
+
+            // UseHal should be before UseMvc.
+            // Note that this middleware will actually write the response instead
+            // of the UseMvc method if it is present.
             app.UseHal();
             app.UseMvcWithDefaultRoute();
         }
