@@ -101,7 +101,7 @@ namespace Passless.Hal.Converters
 
                 if (embeddedToken != null)
                 {
-                    result.Embedded = ReadRelations<IEmbeddedResource>(result.Embedded.GetType(), (JObject)embeddedToken, serializer);
+                    result.Embedded = ReadRelations<IResource>(result.Embedded.GetType(), (JObject)embeddedToken, serializer);
                 }
             }
 

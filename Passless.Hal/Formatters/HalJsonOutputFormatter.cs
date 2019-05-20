@@ -15,23 +15,18 @@ using Passless.Hal.Extensions;
 
 namespace Passless.Hal.Formatters
 {
-    public class HalJsonOutputFormatter : JsonOutputFormatter
+    public class HalJsonOutputFormatter : JsonOutputFormatter, IHalFormatter
     {
-        private HalOptions options;
-        private IUrlHelperFactory urlHelperFactory;
-
         public HalJsonOutputFormatter(
             JsonSerializerSettings serializerSettings, 
             ArrayPool<char> charPool, 
-            HalOptions options,
-            IUrlHelperFactory urlHelperFactory)
+            HalOptions options)
             : base(serializerSettings, charPool)
         {
-            this.options = options
-                ?? throw new ArgumentNullException(nameof(options));
-
-            this.urlHelperFactory = urlHelperFactory
-                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
+            if (options == null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
             this.SupportedMediaTypes.Clear();
             if (options.SupportedMediaTypes != null)
@@ -41,19 +36,6 @@ namespace Passless.Hal.Formatters
                     this.SupportedMediaTypes.Add(MediaTypeHeaderValue.Parse(mediaType));
                 }
             }
-        }
-
-        protected override bool CanWriteType(Type type)
-        {
-            // Called when IActionResult is returned
-            return base.CanWriteType(type);
-        }
-
-
-        public override bool CanWriteResult(OutputFormatterCanWriteContext context)
-        {
-            // Called when an object is returned from an action
-            return base.CanWriteResult(context);
         }
 
         protected override JsonSerializer CreateJsonSerializer()
@@ -66,26 +48,20 @@ namespace Passless.Hal.Formatters
             return serializer;
         }
 
-        public override async Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
+        public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
             IServiceProvider serviceProvider = context.HttpContext.RequestServices;
             var logger = serviceProvider.GetService(typeof(ILogger<HalJsonOutputFormatter>)) as ILogger;
-            var actionContextAccessor = serviceProvider.GetService(typeof(IActionContextAccessor)) as IActionContextAccessor;
-
-            object toSerialize = context.Object;
-            if (this.options.ResourceFactory != null)
-            {
-                var urlHelper = this.urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext);
-                toSerialize = await this.options.ResourceFactory(context.Object, actionContextAccessor.ActionContext, urlHelper);
-            }
 
             using (var textWriter = context.WriterFactory(context.HttpContext.Response.Body, selectedEncoding))
             using (var writer = this.CreateJsonWriter(textWriter))
             {
                 var serializer = this.CreateJsonSerializer();
-                serializer.Serialize(writer, toSerialize);
+                serializer.Serialize(writer, context.Object);
                 writer.Flush();
             }
+
+            return Task.CompletedTask;
         }
     }
 }

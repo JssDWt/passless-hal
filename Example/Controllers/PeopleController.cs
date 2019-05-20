@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Example.Models;
 using Microsoft.AspNetCore.Mvc;
+using Passless.Hal;
 
 namespace Example.Controllers
 {
@@ -21,7 +20,41 @@ namespace Example.Controllers
                 Id = 1,
                 Name = "Jesse de Wit",
                 DateOfBirth = new DateTime(1988, 5, 27, 0, 0, 0, DateTimeKind.Utc),
+                Address = "*secret*",
+                Friends = new int[]
+                {
+                    3,
+                    4
+                }
+            },
+            new Person
+            {
+                Id = 2,
+                Name = "Sjaak de Wit",
+                DateOfBirth = new DateTime(1950, 11, 7, 0, 0, 0, DateTimeKind.Utc),
                 Address = "*secret*"
+            },
+            new Person
+            {
+                Id = 3,
+                Name = "Cass Gooskens",
+                DateOfBirth = new DateTime(1989, 6, 28, 0, 0, 0, DateTimeKind.Utc),
+                Address = "*secret*",
+                Friends = new int[]
+                {
+                    1
+                }
+            },
+            new Person
+            {
+                Id = 4,
+                Name = "Jelle Boterman",
+                DateOfBirth = new DateTime(1988, 3, 7, 0, 0, 0, DateTimeKind.Utc),
+                Address = "*secret*",
+                Friends = new int[]
+                {
+                    1
+                }
             }
         };
 
@@ -34,6 +67,7 @@ namespace Example.Controllers
         }
 
         [HttpGet("{id}")]
+        [HalEmbedAction("friends", "Friends")]
         public ActionResult<Person> Detail(int id)
         {
             var person = People.FirstOrDefault(p => p.Id == id);
@@ -46,6 +80,20 @@ namespace Example.Controllers
             // Note that this method returns a Person object, not an IResource object.
             // This is converted into a HAL resource in the ResourceFactory (see Startup.cs)
             return Ok(person);
+        }
+
+        [HttpGet("{id}/friends")]
+        public ActionResult<IEnumerable<Person>> Friends(int id)
+        {
+            var person = People.FirstOrDefault(p => p.Id == id);
+
+            if (person == null)
+            {
+                return NotFound();
+            }
+
+            var friends = People.Where(p => person.Friends.Contains(p.Id)).ToList();
+            return Ok(friends);
         }
 
         [HttpPost]

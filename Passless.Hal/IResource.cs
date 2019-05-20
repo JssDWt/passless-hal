@@ -7,7 +7,7 @@ namespace Passless.Hal
     /// <summary>
     /// Interface describing a HAL resource.
     /// </summary>
-    public interface IResource
+    public interface IResource : IRelated
     {
         /// <summary>
         /// Gets the links for the current resource. Containing related links to other resources.
@@ -20,7 +20,7 @@ namespace Passless.Hal
         /// or inconsistent version of the representations served from the target Uri.
         /// </summary>
         [JsonProperty(Resource.EmbeddedPropertyName)]
-        ICollection<IEmbeddedResource> Embedded { get; set; }
+        ICollection<IResource> Embedded { get; set; }
 
         /// <summary>
         /// Gets the names of the singular relations, or the relations that always have a single item.

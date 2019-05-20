@@ -97,7 +97,7 @@ namespace Passless.Hal.Streaming
                             break;
                         case "_embedded":
                             var embeddedType = this.Resource.Embedded.GetType();
-                            this.Resource.Embedded = this.ReadRelations<IEmbeddedResource>(embeddedType);
+                            this.Resource.Embedded = this.ReadRelations<IResource>(embeddedType);
 
                             // NOTE: Call this.Read(), not base.Read(), because the next property may be another reserved one. This can hardly be called recursion...
                             success = this.Read();
