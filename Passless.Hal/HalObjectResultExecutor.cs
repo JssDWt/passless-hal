@@ -67,6 +67,7 @@ namespace Passless.Hal
                 if (context.HttpContext.Response is HalHttpResponse response)
                 {
                     response.Resource = result.Value;
+                    response.ActionContext = context;
                 }
 
                 return Task.CompletedTask;

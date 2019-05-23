@@ -16,5 +16,6 @@
     <Folder Include="Formatters\" />
     <Folder Include="Internal\" />
     <Folder Include="Factories\" />
+    <Folder Include="Inspectors\" />
   </ItemGroup>
 </Project>

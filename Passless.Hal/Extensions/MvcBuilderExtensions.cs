@@ -24,8 +24,8 @@ namespace Passless.Hal.Extensions
             // Make sure the custom formatters can access the action context.
             builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-            // Inject the default resource builder.
-            builder.Services.AddSingleton<IHalResourceFactoryMetadata, AttributeEmbedHalResourceFactory>();
+            // Inject the default resource factory.
+            builder.Services.AddSingleton<IHalResourceFactoryMetadata, DefaultHalResourceFactory>();
             builder.Services.ConfigureOptions<HalSetup>();
 
             if (halOptionsBuilder != null)

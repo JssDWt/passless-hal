@@ -6,14 +6,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Passless.Hal.Extensions;
-using Passless.Hal.Streaming;
 
 namespace Passless.Hal.Converters
 {
     public class ResourceJsonConverter : JsonConverter
     {
-        private bool canRead = true;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ResourceJsonConverter" /> class.
         /// </summary>
@@ -22,7 +19,7 @@ namespace Passless.Hal.Converters
 
         }
 
-        public override bool CanRead => this.canRead;
+        public override bool CanRead => false;
         public override bool CanWrite => true;
         public override bool CanConvert(Type objectType)
         {
@@ -37,112 +34,113 @@ namespace Passless.Hal.Converters
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            IResource result = null;
+            throw new NotSupportedException();
+            //IResource result = null;
 
-            if (!this.CanConvert(objectType))
-            {
-                throw new ArgumentException(
-                    $"Cannot read as type '{objectType?.FullName ?? "[NULL]"}', because it is not a '{typeof(IResource).FullName}'");
-            }
+            //if (!this.CanConvert(objectType))
+            //{
+            //    throw new ArgumentException(
+            //        $"Cannot read as type '{objectType?.FullName ?? "[NULL]"}', because it is not a '{typeof(IResource).FullName}'");
+            //}
 
-            if (reader == null) throw new ArgumentNullException(nameof(reader));
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
+            //if (reader == null) throw new ArgumentNullException(nameof(reader));
+            //if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
-            var jObject = JObject.Load(reader);
+            //var jObject = JObject.Load(reader);
 
-            if (jObject.TryGetValue(Resource.LinksPropertyName, out JToken linksToken))
-            {
-                jObject.Remove(Resource.LinksPropertyName);
-            }
+            //if (jObject.TryGetValue(Resource.LinksPropertyName, out JToken linksToken))
+            //{
+            //    jObject.Remove(Resource.LinksPropertyName);
+            //}
 
-            if (jObject.TryGetValue(Resource.EmbeddedPropertyName, out JToken embeddedToken))
-            {
-                jObject.Remove(Resource.EmbeddedPropertyName);
-            }
+            //if (jObject.TryGetValue(Resource.EmbeddedPropertyName, out JToken embeddedToken))
+            //{
+            //    jObject.Remove(Resource.EmbeddedPropertyName);
+            //}
 
-            if (objectType.IsOfGenericType(typeof(Resource<>)))
-            {
-                var valueTypes = objectType.GetGenericArguments(typeof(Resource<>));
-                if (valueTypes == null
-                    || valueTypes.Length != 1)
-                {
-                    throw new ArgumentException(
-                        "The specified object type does not meet the constraints needed to deserialize it as a Resource.");
-                }
+            //if (objectType.IsOfGenericType(typeof(Resource<>)))
+            //{
+            //    var valueTypes = objectType.GetGenericArguments(typeof(Resource<>));
+            //    if (valueTypes == null
+            //        || valueTypes.Length != 1)
+            //    {
+            //        throw new ArgumentException(
+            //            "The specified object type does not meet the constraints needed to deserialize it as a Resource.");
+            //    }
 
-                var valueType = valueTypes.Single();
+            //    var valueType = valueTypes.Single();
 
-                var objectContract = serializer.ContractResolver.ResolveContract(objectType);
-                result = (IResource)objectContract.DefaultCreator();
-                var dataProperty = typeof(Resource<>).MakeGenericType(valueTypes).GetProperty(nameof(Resource<dynamic>.Data));
-                var data = jObject.ToObject(valueType, serializer);
-                dataProperty.SetValue(result, data);
-            }
-            else
-            {
-                try
-                {
-                    this.canRead = false;
-                    result = (IResource)jObject.ToObject(objectType, serializer);
-                }
-                finally
-                {
-                    this.canRead = true;
-                }
+            //    var objectContract = serializer.ContractResolver.ResolveContract(objectType);
+            //    result = (IResource)objectContract.DefaultCreator();
+            //    var dataProperty = typeof(Resource<>).MakeGenericType(valueTypes).GetProperty(nameof(Resource<dynamic>.Data));
+            //    var data = jObject.ToObject(valueType, serializer);
+            //    dataProperty.SetValue(result, data);
+            //}
+            //else
+            //{
+            //    try
+            //    {
+            //        this.canRead = false;
+            //        result = (IResource)jObject.ToObject(objectType, serializer);
+            //    }
+            //    finally
+            //    {
+            //        this.canRead = true;
+            //    }
                 
-            }
+            //}
 
-            if (result != null)
-            {
-                if (linksToken != null)
-                {
-                    result.Links = ReadRelations<ILink>(result.Links.GetType(), (JObject)linksToken, serializer);
-                }
+            //if (result != null)
+            //{
+            //    if (linksToken != null)
+            //    {
+            //        result.Links = ReadRelations<ILink>(result.Links.GetType(), (JObject)linksToken, serializer);
+            //    }
 
-                if (embeddedToken != null)
-                {
-                    result.Embedded = ReadRelations<IResource>(result.Embedded.GetType(), (JObject)embeddedToken, serializer);
-                }
-            }
+            //    if (embeddedToken != null)
+            //    {
+            //        result.Embedded = ReadRelations<IResource>(result.Embedded.GetType(), (JObject)embeddedToken, serializer);
+            //    }
+            //}
 
-            return result;
+            //return result;
         }
 
-        private ICollection<T> ReadRelations<T>(Type type, JObject jObject, JsonSerializer serializer) where T : IRelated
-        {
-            var relations = Activator.CreateInstance(type) as ICollection<T>;
-            if (relations == null)
-            {
-                throw new InvalidOperationException(
-                    $"Could not create an instance of type '{type.FullName}' with a default constructor.");
-            }
+        //private ICollection<T> ReadRelations<T>(Type type, JObject jObject, JsonSerializer serializer) where T : IRelated
+        //{
+        //    var relations = Activator.CreateInstance(type) as ICollection<T>;
+        //    if (relations == null)
+        //    {
+        //        throw new InvalidOperationException(
+        //            $"Could not create an instance of type '{type.FullName}' with a default constructor.");
+        //    }
 
-            foreach(var property in jObject)
-            {
-                JToken token = property.Value;
-                switch (token.Type)
-                {
-                    case JTokenType.Array:
-                        var items = token.ToObject<List<T>>(serializer);
-                        foreach (var item in items)
-                        {
-                            item.Rel = property.Key;
-                            relations.Add(item);
-                        }
-                        break;
+        //    foreach(var property in jObject)
+        //    {
+        //        JToken token = property.Value;
+        //        switch (token.Type)
+        //        {
+        //            case JTokenType.Array:
+        //                var items = token.ToObject<List<T>>(serializer);
+        //                foreach (var item in items)
+        //                {
+        //                    item.Rel = property.Key;
+        //                    relations.Add(item);
+        //                }
+        //                break;
 
-                    case JTokenType.Object:
-                        var current = token.ToObject<T>(serializer);
-                        current.Rel = property.Key;
-                        relations.Add(current);
-                        break;
-                    default:
-                        break;
-                }
-            }
+        //            case JTokenType.Object:
+        //                var current = token.ToObject<T>(serializer);
+        //                current.Rel = property.Key;
+        //                relations.Add(current);
+        //                break;
+        //            default:
+        //                break;
+        //        }
+        //    }
 
-            return relations;
-        }
+        //    return relations;
+        //}
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
@@ -171,15 +169,21 @@ namespace Passless.Hal.Converters
             var resourceType = resource.GetType();
             var resourceContract = serializer.ContractResolver.ResolveContract(resourceType) as JsonObjectContract;
 
+            if (resourceContract == null)
+            {
+                throw new JsonSerializationException($"Could not resolve object contract for type '{resourceType}'.");
+            }
+
             if (resourceType.IsOfGenericType(typeof(Resource<>)))
             {
                 // Data property of Resource<> cannot be null, so data is now never null.
-                data = resourceType.GetTypeInfo().GetDeclaredProperty(nameof(Resource<dynamic>.Data)).GetValue(resource);
+                var dataProperty = resourceType.GetProperty(nameof(Resource<dynamic>.Data));
+                data = dataProperty.GetValue(resource);
                 dataType = data?.GetType();
 
-                // TODO: This does not work for collections
                 if (data != null)
                 {
+                    // TODO: Throw if the datatype is a collection.
                     dataContract = serializer.ContractResolver.ResolveContract(dataType) as JsonObjectContract;
                 }
             }
@@ -194,14 +198,13 @@ namespace Passless.Hal.Converters
 
             if (resourceContract.Properties[Resource.LinksPropertyName]?.ShouldSerialize(resource) == true)
             {
-                writer.WritePropertyName(Resource.LinksPropertyName);
-                WriteRelations(serializer, writer, resource.Links, resource.SingularRelations);
+                WriteLinks(serializer, writer, resource);
             }
 
-            if (resourceContract.Properties[Resource.EmbeddedPropertyName]?.ShouldSerialize(resource) == true)
+            if (resourceContract.Properties[Resource.EmbeddedPropertyName]?.ShouldSerialize(resource) == true
+                || (resource is IResourceCollection collection && collection.Collection?.Count > 0))
             {
-                writer.WritePropertyName(Resource.EmbeddedPropertyName);
-                WriteRelations(serializer, writer, resource.Embedded, resource.SingularRelations);
+                WriteEmbedded(serializer, writer, resource);
             }
 
             if (data != null)
@@ -223,35 +226,103 @@ namespace Passless.Hal.Converters
             writer.WriteEndObject();
         }
 
-        private void WriteRelations<T>(
-           JsonSerializer serializer,
-           JsonWriter writer,
-           ICollection<T> relations,
-           ICollection<string> singularRelations) where T : IRelated
+        //private void WriteRelations<T>(
+        //   JsonSerializer serializer,
+        //   JsonWriter writer,
+        //   ICollection<T> relations,
+        //   ICollection<string> singularRelations) where T : IRelated
+        //{
+        //    writer.WriteStartObject();
+        //    foreach (var relation in relations.GroupBy(r => r.Rel))
+        //    {
+        //        writer.WritePropertyName(relation.Key);
+
+        //        var relationItems = relation.ToList();
+        //        if (singularRelations.Contains(relation.Key))
+        //        {
+        //            if (relationItems.Count > 1)
+        //            {
+
+        //            }
+
+        //            serializer.Serialize(writer, relationItems.First());
+        //        }
+        //        else
+        //        {
+        //            serializer.Serialize(writer, relationItems);
+        //        }
+        //    }
+
+        //    writer.WriteEndObject();
+        //}
+
+        private void WriteLinks(JsonSerializer serializer, JsonWriter writer, IResource resource)
         {
+            writer.WritePropertyName(Resource.LinksPropertyName);
             writer.WriteStartObject();
-            foreach (var relation in relations.GroupBy(r => r.Rel))
+            foreach (var relation in resource.Links.GroupBy(l => l.Rel))
             {
-                writer.WritePropertyName(relation.Key);
+                WriteRelation(serializer, writer, relation.Key, relation.ToList(), resource.SingularRelations);
+            }
+            writer.WriteEndObject();
+        }
 
-                var relationItems = relation.ToList();
-                if (singularRelations.Contains(relation.Key))
-                {
-                    if (relationItems.Count > 1)
-                    {
-                        throw new JsonSerializationException(
-                            $"Could not serialize resource, because the relation '{relation.Key}' is marked singular, but contains {relationItems.Count} items.");
-                    }
+        private void WriteEmbedded(JsonSerializer serializer, JsonWriter writer, IResource resource)
+        {
+            writer.WritePropertyName(Resource.EmbeddedPropertyName);
+            writer.WriteStartObject();
+            bool isCollection = false;
+            string embedRel = null;
+            ICollection<IResource> embedItems = null;
+            bool collectionProcessed = false;
+            if (resource is IResourceCollection collection)
+            {
+                embedRel = collection.EmbedRel;
+                embedItems = collection.Collection;
+                isCollection = embedItems != null;
+            }
 
-                    serializer.Serialize(writer, relationItems.First());
-                }
-                else
+            foreach (var relation in resource.Embedded.GroupBy(l => l.Rel))
+            {
+                var rel = relation.Key;
+                var items = relation.ToList();
+
+                if (isCollection && rel == embedRel)
                 {
-                    serializer.Serialize(writer, relationItems);
+                    items.AddRange(embedItems);
+                    collectionProcessed = true;
                 }
+
+                WriteRelation(serializer, writer, rel, items, resource.SingularRelations);
+            }
+
+            if (isCollection && !collectionProcessed)
+            {
+                WriteRelation(serializer, writer, embedRel, embedItems, resource.SingularRelations);
             }
 
             writer.WriteEndObject();
+        }
+
+        private void WriteRelation<T>(JsonSerializer serializer, JsonWriter writer, string rel, ICollection<T> items, ICollection<string> singularRelations)
+        {
+            bool isSingular = singularRelations.Contains(rel);
+            if (isSingular && items.Count > 1)
+            {
+                throw new JsonSerializationException(
+                    $"Could not serialize resource, because the relation '{rel}' is marked singular, but contains {items.Count} items.");
+            }
+
+            writer.WritePropertyName(rel);
+
+            if (isSingular)
+            {
+                serializer.Serialize(writer, items.First());
+            }
+            else
+            {
+                serializer.Serialize(writer, items);
+            }
         }
     }
 

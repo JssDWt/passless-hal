@@ -13,9 +13,6 @@ namespace Passless.Hal.Extensions
             "application/hal+json"
         };
 
-        private ICollection<IHalResourceFactoryMetadata> resourceFactories
-            = new List<IHalResourceFactoryMetadata>();
-
         public ICollection<string> SupportedMediaTypes
         {
             get => this.supportedMediaTypes;
@@ -23,12 +20,19 @@ namespace Passless.Hal.Extensions
                 ?? throw new ArgumentNullException(nameof(SupportedMediaTypes));
         }
 
-        public ICollection<IHalResourceFactoryMetadata> ResourceFactories 
+        private IHalResourceFactoryMetadata resourceFactory;
+        public IHalResourceFactoryMetadata ResourceFactory 
         {
-            get => this.resourceFactories;
-            set => this.resourceFactories = value
-                ?? throw new ArgumentNullException(nameof(ResourceFactories));
+            get => this.resourceFactory;
+            set => this.resourceFactory = value
+                ?? throw new ArgumentNullException(nameof(ResourceFactory));
         }
-            
+
+        public IList<IHalResourceInspectorMetadata> ResourceInspectors { get; set; }
+            = new List<IHalResourceInspectorMetadata>();
+
+        public bool UseDefaultResourceFactory { get; set; } = true;
+
+        public bool UseDefaultResourceInspectors { get; set; } = true;
     }
 }

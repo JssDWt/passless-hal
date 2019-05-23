@@ -7,7 +7,7 @@ namespace Passless.Hal
     /// <summary>
     /// Generic class describing a resource. This class can be used instead of an inheritance stategy for HAL resources.
     /// </summary>
-    public class Resource<T> : Resource where T : class
+    public class Resource<T> : Resource, IResource<T> where T: class
     {
         /// <summary>
         /// Backing field for the Data property.
@@ -90,11 +90,6 @@ namespace Passless.Hal
             get => this.data;
             set
             {
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(Data));
-                }
-
                 if (value is IResource)
                 {
                     throw new ArgumentException(

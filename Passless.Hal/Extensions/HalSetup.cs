@@ -1,15 +1,23 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Passless.Hal.Factories;
 
 namespace Passless.Hal.Extensions
 {
     public class HalSetup : IConfigureOptions<HalOptions>
     {
         private IHalResourceFactoryMetadata resourceFactory;
-        public HalSetup(IHalResourceFactoryMetadata resourceFactory)
+        private IServiceProvider serviceProvider;
+        public HalSetup(
+            IServiceProvider serviceProvider, 
+            IHalResourceFactoryMetadata resourceFactory)
         {
             this.resourceFactory = resourceFactory
                 ?? throw new ArgumentNullException(nameof(resourceFactory));
+
+            this.serviceProvider = serviceProvider
+                ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
         public void Configure(HalOptions options)
@@ -19,10 +27,19 @@ namespace Passless.Hal.Extensions
                 throw new ArgumentNullException(nameof(options));
             }
 
-            if (options.ResourceFactories.Count == 0)
+            if (options.UseDefaultResourceFactory)
             {
-                options.ResourceFactories.Add(resourceFactory);
+                options.ResourceFactory = resourceFactory;
             }
+
+            if (options.UseDefaultResourceInspectors)
+            {
+                var attributeInspector =
+                ActivatorUtilities.CreateInstance<AttributeEmbedHalResourceInspector>(serviceProvider);
+
+                options.ResourceInspectors.Add(attributeInspector);
+            }
+
         }
     }
 }
