@@ -60,7 +60,6 @@ namespace Passless.Hal.Extensions
                 return;
             }
 
-
             if (context.Response.HasStarted)
             {
                 logger.LogWarning("Could not transform response into a HAL response, because the response has already started.");
@@ -130,10 +129,10 @@ namespace Passless.Hal.Extensions
                 lggr);
 
             var inspectingContext = new HalResourceInspectingContext(
-                resource, actionContext, true, EmbeddedResourceFactory, this.next);
+                resource, actionContext, isRoot, EmbeddedResourceFactory, this.next, resourceObject);
 
             var result = await resourceInspector.InspectAsync(inspectingContext);
-            return result.Resource;
+            return result.Resource; 
         }
 
         private Task<IResource> EmbeddedResourceFactory(ActionContext context, object resource)
