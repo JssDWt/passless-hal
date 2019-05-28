@@ -35,17 +35,23 @@ namespace Passless.Hal.Extensions
 
             if (options.UseDefaultResourceInspectors)
             {
-                var embedAttributeInspector =
-                    ActivatorUtilities.CreateInstance<AttributeEmbedHalResourceInspector>(serviceProvider);
-
-                options.ResourceInspectors.Add(embedAttributeInspector);
-
+                // Add links using attributes.
                 var linkAttributeInspector =
                     ActivatorUtilities.CreateInstance<AttributeLinkInspector>(serviceProvider);
 
                 options.ResourceInspectors.Add(linkAttributeInspector);
-            }
 
+                // Add embedded resources using attributes.
+                var embedAttributeInspector =
+                    ActivatorUtilities.CreateInstance<AttributeEmbedInspector>(serviceProvider);
+
+                options.ResourceInspectors.Add(embedAttributeInspector);
+
+                // Validate the resulting resources.
+                var validationInspector =
+                    ActivatorUtilities.CreateInstance<ResourceValidationInspector>(serviceProvider);
+                options.ResourceInspectors.Insert(0, validationInspector);
+            }
         }
     }
 }
