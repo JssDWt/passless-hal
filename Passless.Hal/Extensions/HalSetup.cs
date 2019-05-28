@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Passless.Hal.Factories;
+using Passless.Hal.Inspectors;
 
 namespace Passless.Hal.Extensions
 {
@@ -34,10 +35,15 @@ namespace Passless.Hal.Extensions
 
             if (options.UseDefaultResourceInspectors)
             {
-                var attributeInspector =
-                ActivatorUtilities.CreateInstance<AttributeEmbedHalResourceInspector>(serviceProvider);
+                var embedAttributeInspector =
+                    ActivatorUtilities.CreateInstance<AttributeEmbedHalResourceInspector>(serviceProvider);
 
-                options.ResourceInspectors.Add(attributeInspector);
+                options.ResourceInspectors.Add(embedAttributeInspector);
+
+                var linkAttributeInspector =
+                    ActivatorUtilities.CreateInstance<AttributeLinkInspector>(serviceProvider);
+
+                options.ResourceInspectors.Add(linkAttributeInspector);
             }
 
         }

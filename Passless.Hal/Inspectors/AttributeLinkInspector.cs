@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -7,14 +8,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Passless.Hal.Inspectors
 {
-    public class AddSelfLinkInspector : IHalResourceInspector
+    public class AttributeLinkInspector : IHalResourceInspector
     {
         private readonly IUrlHelperFactory urlHelperFactory;
-        private readonly ILogger<AddSelfLinkInspector> logger;
+        private readonly ILogger<AttributeLinkInspector> logger;
 
-        public AddSelfLinkInspector(
+        public AttributeLinkInspector(
             IUrlHelperFactory urlHelperFactory,
-            ILogger<AddSelfLinkInspector> logger)
+            ILogger<AttributeLinkInspector> logger)
         {
             this.urlHelperFactory = urlHelperFactory
                 ?? throw new ArgumentNullException(nameof(urlHelperFactory));
@@ -66,10 +67,28 @@ namespace Passless.Hal.Inspectors
                 descriptor.ControllerTypeInfo,
                 descriptor.MethodInfo);
 
+            if (context.Resource.Links == null && attributes.Count > 0)
+            {
+                context.Resource.Links = new List<ILink>();
+            }
+
             foreach (var halLink in attributes)
             {
-                var path = halLink.GetLinkUri(urlHelper);
+                var path = halLink.GetLinkUri(context.OriginalObject, urlHelper);
                 var link = new Link(halLink.Rel, path);
+                context.Resource.Links.Add(link);
+                if (halLink.IsSingular)
+                {
+                    if (context.Resource.SingularRelations == null)
+                    {
+                        context.Resource.SingularRelations = new HashSet<string>();
+                    }
+
+                    if (!context.Resource.SingularRelations.Contains(halLink.Rel))
+                    {
+                        context.Resource.SingularRelations.Add(halLink.Rel);
+                    }
+                }
             }
         }
     }

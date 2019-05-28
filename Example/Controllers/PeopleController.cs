@@ -10,6 +10,7 @@ namespace Example.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [HalStaticLink("google", "https://www.google.com/", IsSingular = true)]
     public class PeopleController : ControllerBase
     {
         static int maxId = 1;
@@ -59,6 +60,7 @@ namespace Example.Controllers
         };
 
         [HttpGet]
+        [HalLinkAction("self", nameof(Get))]
         public ActionResult<IEnumerable<Person>> Get()
         {
             // Note that this method returns Person objects, not IResource objects.
@@ -67,7 +69,8 @@ namespace Example.Controllers
         }
 
         [HttpGet("{id}")]
-        [HalEmbedAction("friends", "Friends")]
+        [HalEmbedAction("friends", nameof(Friends))]
+        [HalLinkAction("self", nameof(Detail), Parameter = "Id")]
         public ActionResult<Person> Detail(int id)
         {
             var person = People.FirstOrDefault(p => p.Id == id);
@@ -92,11 +95,12 @@ namespace Example.Controllers
                 return NotFound();
             }
 
-            var friends = People.Where(p => person.Friends.Contains(p.Id)).ToList();
+            var friends = People.Where(p => person.Friends?.Contains(p.Id) ?? false).ToList();
             return Ok(friends);
         }
 
         [HttpPost]
+        [HalLinkAction("self", nameof(Detail), Parameter = "Id")]
         public ActionResult<Person> Post([FromBody]Person person)
         {
             if (!ModelState.IsValid)
