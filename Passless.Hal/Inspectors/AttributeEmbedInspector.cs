@@ -14,13 +14,13 @@ using Passless.Hal.Internal;
 
 namespace Passless.Hal.Factories
 {
-    public class AttributeEmbedHalResourceInspector : IAsyncHalResourceInspector
+    public class AttributeEmbedInspector : IAsyncHalResourceInspector
     {
         private readonly IUrlHelperFactory urlHelperFactory;
-        private readonly ILogger<AttributeEmbedHalResourceInspector> logger;
-        public AttributeEmbedHalResourceInspector(
+        private readonly ILogger<AttributeEmbedInspector> logger;
+        public AttributeEmbedInspector(
             IUrlHelperFactory urlHelperFactory,
-            ILogger<AttributeEmbedHalResourceInspector> logger)
+            ILogger<AttributeEmbedInspector> logger)
         {
             this.urlHelperFactory = urlHelperFactory
                 ?? throw new ArgumentNullException(nameof(urlHelperFactory));
