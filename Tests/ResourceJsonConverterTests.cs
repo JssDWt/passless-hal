@@ -7,7 +7,6 @@ using Newtonsoft.Json.Serialization;
 using NUnit.Framework;
 using Passless.Hal;
 using Passless.Hal.Converters;
-using Passless.Hal.Streaming;
 
 namespace Tests
 {

@@ -7,6 +7,6 @@ namespace Passless.Hal
 {
     public interface IAsyncHalResourceFactory : IHalResourceFactoryMetadata
     {
-        Task CreateResourceAsync(HalMiddleware middleware, ActionContext actionContext, ObjectResult objectResult);
+        Task<IResource> CreateResourceAsync(ResourceFactoryContext context);
     }
 }

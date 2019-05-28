@@ -21,25 +21,52 @@ namespace Passless.Hal.Extensions
                 throw new ArgumentNullException(nameof(builder));
             }
 
-            // Make sure the custom formatters can access the action context.
-            builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            AddHal(builder.Services, halOptionsBuilder);
 
-            // Inject the default resource builder.
-            builder.Services.AddSingleton<IHalResourceFactoryMetadata, AttributeEmbedHalResourceFactory>();
-            builder.Services.ConfigureOptions<HalSetup>();
+            return builder;
+        }
+
+        public static IMvcCoreBuilder AddHal(this IMvcCoreBuilder builder)
+            => AddHal(builder, null);
+
+        public static IMvcCoreBuilder AddHal(
+            this IMvcCoreBuilder builder,
+            Action<HalOptions> halOptionsBuilder)
+        {
+            if (builder == null)
+            {
+                throw new ArgumentNullException(nameof(builder));
+            }
+
+            AddHal(builder.Services, halOptionsBuilder);
+
+            return builder;
+        }
+
+        private static void AddHal(IServiceCollection services, Action<HalOptions> halOptionsBuilder)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            // Make sure the custom formatters can access the action context.
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            // Inject the default resource factory.
+            services.AddSingleton<IHalResourceFactoryMetadata, DefaultHalResourceFactory>();
+            services.ConfigureOptions<HalSetup>();
 
             if (halOptionsBuilder != null)
             {
-                builder.Services.Configure(halOptionsBuilder);
+                services.Configure(halOptionsBuilder);
             }
 
             // registers the custom formatter(s)
-            builder.Services.ConfigureOptions<HalMvcSetup>();
+            services.ConfigureOptions<HalMvcSetup>();
 
             // Wrap the existing actionresultexecutor in the hal executor.
-            builder.Services.Decorate<IActionResultExecutor<ObjectResult>, HalObjectResultExecutor>();
-
-            return builder;
+            services.Decorate<IActionResultExecutor<ObjectResult>, HalObjectResultExecutor>();
         }
     }
 }

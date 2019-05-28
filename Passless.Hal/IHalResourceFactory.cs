@@ -6,6 +6,6 @@ namespace Passless.Hal
 {
     public interface IHalResourceFactory : IHalResourceFactoryMetadata
     {
-        void CreateResource(HalMiddleware middleware, ActionContext actionContext, ObjectResult objectResult);
+        IResource CreateResource(ResourceFactoryContext context);
     }
 }

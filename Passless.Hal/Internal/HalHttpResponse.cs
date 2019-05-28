@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
 namespace Passless.Hal.Internal
@@ -22,6 +23,7 @@ namespace Passless.Hal.Internal
         }
 
         public object Resource { get; set; }
+        public ActionContext ActionContext { get; set; }
 
         public override HttpContext HttpContext { get; }
 

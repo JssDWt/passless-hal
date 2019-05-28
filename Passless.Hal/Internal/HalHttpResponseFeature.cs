@@ -12,7 +12,7 @@ namespace Passless.Hal.Internal
         {
         }
 
-        public int StatusCode { get; set; }
+        public int StatusCode { get; set; } = 200;
         public string ReasonPhrase { get; set; }
         public IHeaderDictionary Headers { get; set; } = new HeaderDictionary();
         public Stream Body { get; set; } = Stream.Null;
