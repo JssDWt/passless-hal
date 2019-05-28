@@ -72,12 +72,6 @@ namespace Passless.Hal.Factories
                 throw new ArgumentException("HttpContext features cannot be null.", nameof(context));
             }
 
-            var obj = context.ActionContext.HttpContext.RequestServices.GetService(typeof(IActionResultExecutor<ObjectResult>));
-            if (!(obj is HalObjectResultExecutor))
-            {
-                throw new HalException("Cannot execute inspector, because the HalObjectResultExecutor is not registered.");
-            }
-
             if (context.MvcPipeline == null)
             {
                 throw new ArgumentException("Context does not contain the mvc pipeline.", nameof(context));
