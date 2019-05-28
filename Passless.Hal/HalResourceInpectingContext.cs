@@ -22,7 +22,8 @@ namespace Passless.Hal
             ActionContext actionContext,
             bool isRootResource,
             ResourceFactory resourceFactory,
-            RequestDelegate next)
+            RequestDelegate next,
+            object original)
         {
             this.Resource = resource
                 ?? throw new ArgumentNullException(nameof(resource));
@@ -37,6 +38,9 @@ namespace Passless.Hal
 
             this.MvcPipeline = next
                 ?? throw new ArgumentNullException(nameof(next));
+
+            this.OriginalObject = original
+                ?? throw new ArgumentNullException(nameof(original));
         }
 
         /// <summary>
@@ -67,6 +71,8 @@ namespace Passless.Hal
         /// resource inspectors for embedded resources as well.</remarks>
         public ResourceFactory ResourceFactory { get; }
 
-        public RequestDelegate MvcPipeline { get; set; }
+        public RequestDelegate MvcPipeline { get; }
+
+        public object OriginalObject { get; }
     }
 }
