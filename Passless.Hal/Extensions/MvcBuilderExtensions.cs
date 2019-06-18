@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Passless.Hal.Factories;
+using Passless.Hal.Internal;
 
 namespace Passless.Hal.Extensions
 {

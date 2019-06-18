@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Passless.Hal
+namespace Passless.Hal.Inspectors
 {
     public interface IAsyncHalResourceInspector : IHalResourceInspectorMetadata
     {

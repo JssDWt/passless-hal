@@ -39,6 +39,7 @@ namespace Passless.Hal.Internal
 
         public override WebSocketManager WebSockets => this.context.WebSockets;
 
+        [Obsolete("This is obsolete and will be removed in a future version. See https://go.microsoft.com/fwlink/?linkid=845470.")]
         public override AuthenticationManager Authentication => this.context.Authentication;
 
         public override ClaimsPrincipal User { get => this.context.User; set { } }

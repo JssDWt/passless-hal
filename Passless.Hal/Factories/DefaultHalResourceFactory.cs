@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Passless.Hal.Models;
 
 namespace Passless.Hal.Factories
 {

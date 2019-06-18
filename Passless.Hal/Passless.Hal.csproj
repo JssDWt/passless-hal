@@ -25,5 +25,7 @@
     <Folder Include="Internal\" />
     <Folder Include="Factories\" />
     <Folder Include="Inspectors\" />
+    <Folder Include="Models\" />
+    <Folder Include="Attributes\" />
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Passless.Hal.Factories;
+using Passless.Hal.Inspectors;
 
 namespace Passless.Hal.Extensions
 {

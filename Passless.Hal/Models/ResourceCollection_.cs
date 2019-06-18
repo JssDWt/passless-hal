@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Passless.Hal
+namespace Passless.Hal.Models
 {
     public class ResourceCollection<T> : Resource<T>, IResourceCollection<T> where T : class
     {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Passless.Hal.Extensions;
 
-namespace Passless.Hal
+namespace Passless.Hal.Factories
 {
     public interface IAsyncHalResourceFactory : IHalResourceFactoryMetadata
     {

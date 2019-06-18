@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 using Passless.Hal.Formatters;
 using Passless.Hal.Internal;
 
-namespace Passless.Hal
+namespace Passless.Hal.Internal
 {
     public class HalObjectResultExecutor : IActionResultExecutor<ObjectResult>
     {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Passless.Hal.Extensions;
 
-namespace Passless.Hal
+namespace Passless.Hal.Factories
 {
     public interface IHalResourceFactory : IHalResourceFactoryMetadata
     {

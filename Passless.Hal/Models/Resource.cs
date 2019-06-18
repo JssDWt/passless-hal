@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Passless.Hal
+namespace Passless.Hal.Models
 {
     /// <summary>
     /// Class describing a resource. Inheriting classes can be serialized as HAL resources.

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
 using Passless.Hal.Extensions;
+using Passless.Hal.Models;
 
 namespace Passless.Hal.Converters
 {

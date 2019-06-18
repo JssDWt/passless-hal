@@ -5,6 +5,8 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
+using Passless.Hal.Attributes;
+using Passless.Hal.Models;
 
 namespace Passless.Hal.Inspectors
 {

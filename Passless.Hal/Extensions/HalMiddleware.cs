@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Passless.Hal.Factories;
+using Passless.Hal.Inspectors;
 using Passless.Hal.Internal;
 
 namespace Passless.Hal.Extensions

@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Passless.Hal
+namespace Passless.Hal.Inspectors
 {
     public class HalResourceInspectedContext
     {

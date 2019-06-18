@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Passless.Hal
+namespace Passless.Hal.Models
 {
     /// <summary>
     /// Class representing a link to a resource.

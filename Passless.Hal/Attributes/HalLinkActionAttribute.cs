@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Passless.Hal
+namespace Passless.Hal.Attributes
 {
     public class HalLinkActionAttribute : HalLinkAttribute
     {
