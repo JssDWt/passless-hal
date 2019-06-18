@@ -14,6 +14,8 @@ namespace Passless.Hal
 
         public string Rel { get; }
 
+        public bool IncludeLink { get; set; }
+
         public abstract string GetEmbedUri(IUrlHelper url);
     }
 }

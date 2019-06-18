@@ -51,6 +51,11 @@ namespace Passless.Hal.Extensions
                 var validationInspector =
                     ActivatorUtilities.CreateInstance<ResourceValidationInspector>(serviceProvider);
                 options.ResourceInspectors.Insert(0, validationInspector);
+
+                // Check permissions for accessing links.
+                var permissionInspector =
+                    ActivatorUtilities.CreateInstance<LinkPermissionInspector>(serviceProvider);
+                options.ResourceInspectors.Add(permissionInspector);
             }
         }
     }

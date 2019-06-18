@@ -43,7 +43,7 @@ namespace Tests.Integration
                     .Configure(app =>
                     {
                         app.UseMvcWithDefaultRoute();
-                    });
+                    }));
             this.client = server.CreateClient();
         }
 

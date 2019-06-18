@@ -100,5 +100,10 @@ namespace Passless.Hal
         /// Gets or sets a string that indicates the language of the target resource.
         /// </summary>
         public virtual string HrefLang { get; set; }
+
+        public override string ToString()
+        {
+            return $"{{\"{nameof(Rel)}\": \"{Rel}\", \"{nameof(HRef)}\": \"{HRef}\"}}";
+        }
     }
 }

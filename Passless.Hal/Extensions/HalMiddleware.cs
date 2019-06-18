@@ -10,6 +10,7 @@ using Passless.Hal.Internal;
 
 namespace Passless.Hal.Extensions
 {
+    // TODO: Build an inspector that checks the permissions for a link, by invoking all filters.
     public class HalMiddleware
     {
         private readonly ILogger<HalMiddleware> logger;

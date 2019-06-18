@@ -70,6 +70,7 @@ namespace Example.Controllers
 
         [HttpGet("{id}")]
         [HalEmbedAction("friends", nameof(Friends))]
+        [HalLinkAction("friends", nameof(Friends), Parameter = "Id")]
         [HalLinkAction("self", nameof(Detail), Parameter = "Id")]
         public ActionResult<Person> Detail(int id)
         {

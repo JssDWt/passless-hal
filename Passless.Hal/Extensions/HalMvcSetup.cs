@@ -4,15 +4,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
 using Passless.Hal.Formatters;
+using Passless.Hal.Internal;
 
 namespace Passless.Hal.Extensions
 {
-    public class HalMvcSetup : IConfigureOptions<MvcOptions>
+    public class HalMvcSetup : IConfigureOptions<MvcOptions>, IPostConfigureOptions<MvcOptions>
     {
         private readonly MvcJsonOptions jsonOptions;
         private readonly HalOptions halOptions;
         private readonly ArrayPool<char> charPool;
-        private readonly IUrlHelperFactory urlHelperFactory;
 
         public HalMvcSetup(
             IOptions<HalOptions> halOptions,
@@ -38,6 +38,11 @@ namespace Passless.Hal.Extensions
                     this.jsonOptions.SerializerSettings,
                     this.charPool,
                     this.halOptions));
+        }
+
+        public void PostConfigure(string name, MvcOptions options)
+        {
+            options.Filters.AddService<LinkValidationFilter>();
         }
     }
 }

@@ -50,6 +50,7 @@ namespace Passless.Hal.Extensions
                 throw new ArgumentNullException(nameof(services));
             }
 
+
             // Make sure the custom formatters can access the action context.
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
