@@ -18,9 +18,8 @@ namespace Passless.Hal
         /// Initializes a new instance of the <see cref="Resource{T}"/> class.
         /// </summary>
         public Resource()
-            : base()
         {
-            // TODO: Remove this constructor?
+            
         }
 
         /// <summary>
