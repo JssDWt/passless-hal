@@ -4,9 +4,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Passless.Hal.Factories;
+using Passless.Hal.FeatureFlags;
 using Passless.Hal.Inspectors;
 using Passless.Hal.Internal;
 
@@ -52,7 +54,8 @@ namespace Passless.Hal.Extensions
             //var halContext = new HalHttpContext(context, halRequestFeature);
             //await this.next(halContext);
 
-            context.Items["HalMiddlewareRegistered"] = true;
+            var middlewareFlag = context.RequestServices.GetRequiredService<HalMiddlewareFeatureFlag>();
+            middlewareFlag.IsEnabled = true;
 
             await this.next(context);
 

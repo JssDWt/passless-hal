@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Passless.Hal.Factories;
+using Passless.Hal.FeatureFlags;
 using Passless.Hal.Internal;
 
 namespace Passless.Hal.Extensions
@@ -52,6 +53,8 @@ namespace Passless.Hal.Extensions
                 throw new ArgumentNullException(nameof(services));
             }
 
+            // Add feature flags
+            services.AddScoped<HalMiddlewareFeatureFlag>();
 
             // Make sure the custom formatters can access the action context.
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();

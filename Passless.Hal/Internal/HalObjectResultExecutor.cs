@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
+using Passless.Hal.FeatureFlags;
 using Passless.Hal.Formatters;
 using Passless.Hal.Internal;
 
@@ -18,12 +19,14 @@ namespace Passless.Hal.Internal
         private readonly OutputFormatterSelector formatterSelector;
         private readonly Func<Stream, Encoding, TextWriter> writerFactory;
         private readonly ILogger<HalObjectResultExecutor> logger;
+        private readonly HalMiddlewareFeatureFlag middlewareFlag;
 
         public HalObjectResultExecutor(
             IActionResultExecutor<ObjectResult> executor,
             IHttpResponseStreamWriterFactory writerFactory,
             OutputFormatterSelector formatterSelector,
-            ILogger<HalObjectResultExecutor> logger)
+            ILogger<HalObjectResultExecutor> logger,
+            HalMiddlewareFeatureFlag middlewareFlag)
         {
             this.executor = executor
                 ?? throw new ArgumentNullException(nameof(executor));
@@ -40,6 +43,9 @@ namespace Passless.Hal.Internal
 
             this.logger = logger
                 ?? throw new ArgumentNullException(nameof(logger));
+
+            this.middlewareFlag = middlewareFlag
+                ?? throw new ArgumentNullException(nameof(middlewareFlag));
         }
 
         public Task ExecuteAsync(ActionContext context, ObjectResult result)
@@ -74,7 +80,7 @@ namespace Passless.Hal.Internal
             }
 
             // If the HAL middleware is not registered, just run the default executor.
-            if (!context.HttpContext.Items.TryGetValue("HalMiddlewareRegistered", out object isRegistered))
+            if (!this.middlewareFlag.IsEnabled)
             {
                 logger.LogDebug("Hal middleware is not registered. Running default result executor.");
                 return this.executor.ExecuteAsync(context, result);
