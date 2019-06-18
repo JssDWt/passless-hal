@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
@@ -51,8 +52,9 @@ namespace Passless.Hal.Formatters
         public override Task WriteResponseBodyAsync(OutputFormatterWriteContext context, Encoding selectedEncoding)
         {
             IServiceProvider serviceProvider = context.HttpContext.RequestServices;
-            var logger = serviceProvider.GetService(typeof(ILogger<HalJsonOutputFormatter>)) as ILogger;
+            var logger = serviceProvider.GetRequiredService<ILogger<HalJsonOutputFormatter>>();
 
+            logger.LogDebug("Start serializing HAL response body.");
             using (var textWriter = context.WriterFactory(context.HttpContext.Response.Body, selectedEncoding))
             using (var writer = this.CreateJsonWriter(textWriter))
             {
@@ -61,6 +63,7 @@ namespace Passless.Hal.Formatters
                 writer.Flush();
             }
 
+            logger.LogDebug("End serializing HAL response body.");
             return Task.CompletedTask;
         }
     }
