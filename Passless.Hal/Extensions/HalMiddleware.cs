@@ -138,7 +138,7 @@ namespace Passless.Hal.Extensions
                 lggr);
 
             var inspectingContext = new HalResourceInspectingContext(
-                resource, actionContext, isRoot, EmbeddedResourceFactory, this.next, resourceObject);
+                resource, actionContext, isRoot, EmbeddedResourceFactory, this.MvcPipeline, resourceObject);
 
             var result = await resourceInspector.InspectAsync(inspectingContext);
             return result.Resource; 
@@ -165,6 +165,13 @@ namespace Passless.Hal.Extensions
             }
 
             return resource;
+        }
+
+        private async Task MvcPipeline(HttpContext context)
+        {
+            this.logger.LogDebug("Start HAL Resource inspector invoking MVC pipeline.");
+            await this.next(context);
+            this.logger.LogDebug("End HAL Resource inspector invoking MVC pipeline.");
         }
     }
 }
