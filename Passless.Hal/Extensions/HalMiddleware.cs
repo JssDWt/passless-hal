@@ -77,7 +77,6 @@ namespace Passless.Hal.Extensions
             }
 
             // Apparently we're dealing with a HAL response now. 
-
             var actionContext = halFeature.FormattingContext.Context;
             if (actionContext == null)
             {
