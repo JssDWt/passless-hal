@@ -19,14 +19,12 @@ namespace Passless.Hal.Internal
         private readonly OutputFormatterSelector formatterSelector;
         private readonly Func<Stream, Encoding, TextWriter> writerFactory;
         private readonly ILogger<HalObjectResultExecutor> logger;
-        private readonly HalMiddlewareFeatureFlag middlewareFlag;
 
         public HalObjectResultExecutor(
             IActionResultExecutor<ObjectResult> executor,
             IHttpResponseStreamWriterFactory writerFactory,
             OutputFormatterSelector formatterSelector,
-            ILogger<HalObjectResultExecutor> logger,
-            HalMiddlewareFeatureFlag middlewareFlag)
+            ILogger<HalObjectResultExecutor> logger)
         {
             this.executor = executor
                 ?? throw new ArgumentNullException(nameof(executor));
@@ -43,9 +41,6 @@ namespace Passless.Hal.Internal
 
             this.logger = logger
                 ?? throw new ArgumentNullException(nameof(logger));
-
-            this.middlewareFlag = middlewareFlag
-                ?? throw new ArgumentNullException(nameof(middlewareFlag));
         }
 
         public Task ExecuteAsync(ActionContext context, ObjectResult result)
@@ -79,8 +74,10 @@ namespace Passless.Hal.Internal
                 return Task.CompletedTask;
             }
 
+            var halFeature = context.HttpContext.Features?.Get<HalFeature>();
+
             // If the HAL middleware is not registered, just run the default executor.
-            if (!this.middlewareFlag.IsEnabled)
+            if (halFeature == null)
             {
                 logger.LogDebug("Hal middleware is not registered. Running default result executor.");
                 return this.executor.ExecuteAsync(context, result);
@@ -111,7 +108,7 @@ namespace Passless.Hal.Internal
                 logger.LogDebug("Selected an IHalFormatter. Skipping ActionResult execution. That will be handled by the HAL middleware.");
 
                 // Just set the context so the middleware can handle this.
-                context.HttpContext.Items["HalFormattingContext"] = new HalFormattingContext
+                halFeature.FormattingContext = new HalFormattingContext
                 {
                     Context = context,
                     Result = result,

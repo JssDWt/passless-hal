@@ -49,18 +49,22 @@ namespace Passless.Hal.Extensions
 
         public async Task Invoke(HttpContext context)
         {
-            //var requestFeature = context.Features.Get<IHttpRequestFeature>();
-            //var halRequestFeature = new HalHttpRequestFeature(requestFeature);
-            //var halContext = new HalHttpContext(context, halRequestFeature);
-            //await this.next(halContext);
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
-            var middlewareFlag = context.RequestServices.GetRequiredService<HalMiddlewareFeatureFlag>();
-            middlewareFlag.IsEnabled = true;
+            if (context.Features == null)
+            {
+                throw new ArgumentException("Features cannot be null.", nameof(context));
+            }
+
+            var halFeature = new HalFeature();
+            context.Features[typeof(HalFeature)] = halFeature;
 
             await this.next(context);
 
-            if (!context.Items.TryGetValue("HalFormattingContext", out object formatObject)
-                ||!(formatObject is HalFormattingContext halFormattingContext))
+            if (halFeature.FormattingContext == null)
             {
                 logger.LogDebug("Hal formatting context not found, other formatters are handling this response.");
                 return;
@@ -74,13 +78,13 @@ namespace Passless.Hal.Extensions
 
             // Apparently we're dealing with a HAL response now. 
 
-            var actionContext = halFormattingContext.Context;
+            var actionContext = halFeature.FormattingContext.Context;
             if (actionContext == null)
             {
                 throw new HalException("Could not establish actionContext reference.");
             }
 
-            var objectResult = halFormattingContext.Result;
+            var objectResult = halFeature.FormattingContext.Result;
             if (objectResult == null)
             {
                 throw new HalException("Could not establish objectResult reference.");
@@ -97,7 +101,7 @@ namespace Passless.Hal.Extensions
 
             // Now serialize the newly created resource.
             // By executing the modified actionresult.
-            await halFormattingContext.Executor.ExecuteAsync(
+            await halFeature.FormattingContext.Executor.ExecuteAsync(
                 actionContext,
                 objectResult);
         }
