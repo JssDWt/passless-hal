@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using Passless.Hal.Factories;
 
@@ -52,10 +53,10 @@ namespace Passless.Hal.Extensions
 
 
             // Make sure the custom formatters can access the action context.
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
             // Inject the default resource factory.
-            services.AddSingleton<IHalResourceFactoryMetadata, DefaultHalResourceFactory>();
+            services.TryAddSingleton<IHalResourceFactoryMetadata, DefaultHalResourceFactory>();
             services.ConfigureOptions<HalSetup>();
 
             if (halOptionsBuilder != null)
