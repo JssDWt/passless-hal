@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Passless.Hal.Factories;
-using Passless.Hal.Inspectors;
+using Passless.AspNetCore.Hal.Factories;
+using Passless.AspNetCore.Hal.Inspectors;
 
-namespace Passless.Hal.Extensions
+namespace Passless.AspNetCore.Hal.Extensions
 {
     public class HalSetup : IConfigureOptions<HalOptions>
     {

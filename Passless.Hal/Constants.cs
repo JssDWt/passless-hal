@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Passless.Hal
+namespace Passless.AspNetCore.Hal
 {
     public static class Constants
     {

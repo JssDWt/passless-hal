@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Passless.Hal.Factories
+namespace Passless.AspNetCore.Hal.Factories
 {
     public class ResourceFactoryContext
     {

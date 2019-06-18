@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Passless.Hal.Attributes
+namespace Passless.AspNetCore.Hal.Attributes
 {
     public class HalStaticLinkAttribute : HalLinkAttribute
     {

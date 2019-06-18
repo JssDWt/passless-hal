@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Builder;
 
-namespace Passless.Hal.Extensions
+namespace Passless.AspNetCore.Hal.Extensions
 {
     public static class ApplicationBuilderExtensions
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Passless.Hal.Models
+namespace Passless.AspNetCore.Hal.Models
 {
     /// <summary>
     /// Class describing a resource. Inheriting classes can be serialized as HAL resources.
@@ -33,7 +33,7 @@ namespace Passless.Hal.Models
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:Passless.Hal.Resource"/> class,
+        /// Initializes a new instance of the <see cref="T:Passless.AspNetCore.Hal.Resource"/> class,
         /// with the specified singular relations.
         /// </summary>
         /// <param name="singularRelations">Singular relations.</param>

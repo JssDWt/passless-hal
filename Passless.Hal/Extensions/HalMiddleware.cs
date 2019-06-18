@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Passless.Hal.Factories;
-using Passless.Hal.FeatureFlags;
-using Passless.Hal.Inspectors;
-using Passless.Hal.Internal;
+using Passless.AspNetCore.Hal.Factories;
+using Passless.AspNetCore.Hal.FeatureFlags;
+using Passless.AspNetCore.Hal.Inspectors;
+using Passless.AspNetCore.Hal.Internal;
 
-namespace Passless.Hal.Extensions
+namespace Passless.AspNetCore.Hal.Extensions
 {
     // TODO: Build an inspector that checks the permissions for a link, by invoking all filters.
     public class HalMiddleware

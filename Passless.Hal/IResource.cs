@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
-using Passless.Hal.Models;
+using Passless.AspNetCore.Hal.Models;
 
-namespace Passless.Hal
+namespace Passless.AspNetCore.Hal
 {
     /// <summary>
     /// Interface describing a HAL resource.

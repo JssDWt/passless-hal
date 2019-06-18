@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
-using Passless.Hal.Attributes;
-using Passless.Hal.Extensions;
-using Passless.Hal.Internal;
+using Passless.AspNetCore.Hal.Attributes;
+using Passless.AspNetCore.Hal.Extensions;
+using Passless.AspNetCore.Hal.Internal;
 
-namespace Passless.Hal.Inspectors
+namespace Passless.AspNetCore.Hal.Inspectors
 {
     public class AttributeEmbedInspector : IAsyncHalResourceInspector
     {

@@ -11,10 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
-using Passless.Hal.Converters;
-using Passless.Hal.Extensions;
+using Passless.AspNetCore.Hal.Converters;
+using Passless.AspNetCore.Hal.Extensions;
 
-namespace Passless.Hal.Formatters
+namespace Passless.AspNetCore.Hal.Formatters
 {
     public class HalJsonOutputFormatter : JsonOutputFormatter, IHalFormatter
     {

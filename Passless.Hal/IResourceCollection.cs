@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
-namespace Passless.Hal
+namespace Passless.AspNetCore.Hal
 {
     public interface IResourceCollection : IResource
     {

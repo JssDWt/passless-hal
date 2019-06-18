@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Passless.Hal.Factories
+namespace Passless.AspNetCore.Hal.Factories
 {
     public interface IHalResourceFactoryMetadata
     {

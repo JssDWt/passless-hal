@@ -2,7 +2,7 @@
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 
-namespace Passless.Hal
+namespace Passless.AspNetCore.Hal
 {
     public interface IResource<T> : IResource where T: class
     {

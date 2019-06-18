@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Passless.Hal.Formatters
+namespace Passless.AspNetCore.Hal.Formatters
 {
     public interface IHalFormatter
     {

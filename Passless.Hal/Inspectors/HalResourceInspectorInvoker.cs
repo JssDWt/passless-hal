@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Passless.Hal.Inspectors
+namespace Passless.AspNetCore.Hal.Inspectors
 {
     public class HalResourceInspectorInvoker
     {

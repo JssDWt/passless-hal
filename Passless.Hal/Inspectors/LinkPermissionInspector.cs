@@ -3,9 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.Extensions.Logging;
-using Passless.Hal.Internal;
+using Passless.AspNetCore.Hal.Internal;
 
-namespace Passless.Hal.Inspectors
+namespace Passless.AspNetCore.Hal.Inspectors
 {
     public class LinkPermissionInspector : IAsyncHalResourceInspector
     {

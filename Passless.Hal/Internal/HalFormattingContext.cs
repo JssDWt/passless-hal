@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 
-namespace Passless.Hal.Internal
+namespace Passless.AspNetCore.Hal.Internal
 {
     public class HalFormattingContext
     {

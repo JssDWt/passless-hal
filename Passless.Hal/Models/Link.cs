@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Passless.Hal.Models
+namespace Passless.AspNetCore.Hal.Models
 {
     /// <summary>
     /// Class representing a link to a resource.

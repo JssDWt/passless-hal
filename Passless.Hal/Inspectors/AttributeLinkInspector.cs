@@ -5,10 +5,10 @@ using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
-using Passless.Hal.Attributes;
-using Passless.Hal.Models;
+using Passless.AspNetCore.Hal.Attributes;
+using Passless.AspNetCore.Hal.Models;
 
-namespace Passless.Hal.Inspectors
+namespace Passless.AspNetCore.Hal.Inspectors
 {
     public class AttributeLinkInspector : IHalResourceInspector
     {

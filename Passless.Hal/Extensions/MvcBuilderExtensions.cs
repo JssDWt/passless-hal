@@ -4,11 +4,11 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
-using Passless.Hal.Factories;
-using Passless.Hal.FeatureFlags;
-using Passless.Hal.Internal;
+using Passless.AspNetCore.Hal.Factories;
+using Passless.AspNetCore.Hal.FeatureFlags;
+using Passless.AspNetCore.Hal.Internal;
 
-namespace Passless.Hal.Extensions
+namespace Passless.AspNetCore.Hal.Extensions
 {
     public static class MvcBuilderExtensions
     {

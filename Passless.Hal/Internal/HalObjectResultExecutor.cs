@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Logging;
-using Passless.Hal.FeatureFlags;
-using Passless.Hal.Formatters;
-using Passless.Hal.Internal;
+using Passless.AspNetCore.Hal.FeatureFlags;
+using Passless.AspNetCore.Hal.Formatters;
+using Passless.AspNetCore.Hal.Internal;
 
-namespace Passless.Hal.Internal
+namespace Passless.AspNetCore.Hal.Internal
 {
     public class HalObjectResultExecutor : IActionResultExecutor<ObjectResult>
     {

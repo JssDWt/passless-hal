@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 
-namespace Passless.Hal.Internal
+namespace Passless.AspNetCore.Hal.Internal
 {
     public class HalHttpResponse : HttpResponse
     {

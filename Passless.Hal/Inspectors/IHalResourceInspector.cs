@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Passless.Hal.Inspectors
+namespace Passless.AspNetCore.Hal.Inspectors
 {
     public interface IHalResourceInspector : IHalResourceInspectorMetadata
     {

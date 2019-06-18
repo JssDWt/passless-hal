@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Passless.Hal.Converters
+namespace Passless.AspNetCore.Hal.Converters
 {
     public class MappingJsonConverter : JsonConverter
     {

@@ -3,10 +3,10 @@ using System.Buffers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
-using Passless.Hal.Formatters;
-using Passless.Hal.Internal;
+using Passless.AspNetCore.Hal.Formatters;
+using Passless.AspNetCore.Hal.Internal;
 
-namespace Passless.Hal.Extensions
+namespace Passless.AspNetCore.Hal.Extensions
 {
     public class HalMvcSetup : IConfigureOptions<MvcOptions>, IPostConfigureOptions<MvcOptions>
     {

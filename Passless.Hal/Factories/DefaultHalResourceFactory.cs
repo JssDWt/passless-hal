@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections;
-using Passless.Hal.Models;
+using Passless.AspNetCore.Hal.Models;
 
-namespace Passless.Hal.Factories
+namespace Passless.AspNetCore.Hal.Factories
 {
     public class DefaultHalResourceFactory : IHalResourceFactory
     {

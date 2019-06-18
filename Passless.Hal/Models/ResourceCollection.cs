@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Passless.Hal.Models
+namespace Passless.AspNetCore.Hal.Models
 {
     public class ResourceCollection : Resource, IResourceCollection
     {

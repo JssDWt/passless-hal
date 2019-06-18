@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
-using Passless.Hal.Extensions;
+using Passless.AspNetCore.Hal.Extensions;
 
-namespace Passless.Hal.Factories
+namespace Passless.AspNetCore.Hal.Factories
 {
     public interface IHalResourceFactory : IHalResourceFactoryMetadata
     {

@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Passless.Hal.Internal;
+using Passless.AspNetCore.Hal.Internal;
 
-namespace Passless.Hal.Internal
+namespace Passless.AspNetCore.Hal.Internal
 {
     public class LinkValidationFilter : IResourceFilter
     {

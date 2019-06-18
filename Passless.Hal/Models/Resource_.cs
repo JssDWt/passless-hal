@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Passless.Hal.Models
+namespace Passless.AspNetCore.Hal.Models
 {
     /// <summary>
     /// Generic class describing a resource. This class can be used instead of an inheritance stategy for HAL resources.

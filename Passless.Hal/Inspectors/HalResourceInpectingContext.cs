@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Passless.Hal.Factories;
+using Passless.AspNetCore.Hal.Factories;
 
-namespace Passless.Hal.Inspectors
+namespace Passless.AspNetCore.Hal.Inspectors
 {
     /// <summary>
     /// Hal resource inspecting context. Used to inspect hal resources.

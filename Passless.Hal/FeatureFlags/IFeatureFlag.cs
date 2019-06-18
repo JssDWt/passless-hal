@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Passless.Hal.FeatureFlags
+namespace Passless.AspNetCore.Hal.FeatureFlags
 {
     public interface IFeatureFlag
     {

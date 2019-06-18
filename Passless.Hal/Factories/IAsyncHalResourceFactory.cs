@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Passless.Hal.Extensions;
+using Passless.AspNetCore.Hal.Extensions;
 
-namespace Passless.Hal.Factories
+namespace Passless.AspNetCore.Hal.Factories
 {
     public interface IAsyncHalResourceFactory : IHalResourceFactoryMetadata
     {

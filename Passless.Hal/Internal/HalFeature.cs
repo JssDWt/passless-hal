@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Passless.Hal.Internal
+namespace Passless.AspNetCore.Hal.Internal
 {
     public class HalFeature
     {

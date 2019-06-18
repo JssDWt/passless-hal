@@ -5,10 +5,10 @@ using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Serialization;
-using Passless.Hal.Extensions;
-using Passless.Hal.Models;
+using Passless.AspNetCore.Hal.Extensions;
+using Passless.AspNetCore.Hal.Models;
 
-namespace Passless.Hal.Converters
+namespace Passless.AspNetCore.Hal.Converters
 {
     public class ResourceJsonConverter : JsonConverter
     {
