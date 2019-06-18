@@ -41,7 +41,9 @@ namespace Passless.Hal.Extensions
                 ?? throw new ArgumentNullException(nameof(urlHelperFactory));
 
             this.halOptions = halOptions?.Value
-                ?? throw new ArgumentNullException(nameof(halOptions));
+                ?? throw new ArgumentNullException(
+                    nameof(halOptions),
+                    "Be sure to add 'AddHal' to the 'ConfigureServices' method in the Startup class.");
 
             this.loggerFactory = loggerFactory
                 ?? throw new ArgumentNullException(nameof(loggerFactory));
