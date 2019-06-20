@@ -11,9 +11,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
-using Passless.Hal;
-using Passless.Hal.Extensions;
-using Passless.Hal.Internal;
+using Passless.AspNetCore.Hal.Extensions;
+using Passless.AspNetCore.Hal.Factories;
+using Passless.AspNetCore.Hal.Inspectors;
+using Passless.AspNetCore.Hal.Internal;
 
 namespace Tests
 {
@@ -35,15 +36,15 @@ namespace Tests
         }
 
         [Test]
-        public async Task SetsHalMiddlewareRegistered()
+        public async Task SetsHalFeature()
         {
             var next = Next;
             next.Setup(r => r(It.IsAny<HttpContext>()))
                 .Returns(Task.CompletedTask)
                 .Callback<HttpContext>(context =>
                 {
-                    var registered = context.Items["HalMiddlewareRegistered"];
-                    Assert.AreEqual(true, registered);
+                    var halFeature = context.Features.Get<HalFeature>();
+                    Assert.NotNull(halFeature);
                 })
                 .Verifiable();
 
@@ -51,7 +52,8 @@ namespace Tests
                 next.Object,
                 Logger,
                 UrlHelperFactory.Object,
-                HalOptions.Object);
+                HalOptions.Object,
+                Constants.LoggerFactory);
 
             await middleware.Invoke(HttpContext);
             next.Verify();
@@ -89,7 +91,8 @@ namespace Tests
                 next.Object,
                 Logger,
                 UrlHelperFactory.Object,
-                HalOptions.Object);
+                HalOptions.Object,
+                Constants.LoggerFactory);
 
             // If someone tries to write to the stream, this will throw.
             var responseBody = new Mock<Stream>(MockBehavior.Strict);
@@ -101,45 +104,58 @@ namespace Tests
             await middleware.Invoke(httpContext);
         }
 
+        // TODO: Test resourcefactory is invoked.
+        // TODO: Test resourcefactory is invoked for subresources as well.
+        // TODO: Test only root resourceinspectors are invoked for the root resource.
+        // TODO: Test only embed resourceinspectors are invoked for the embedded resources.
+
         [Test]
-        public async Task ResourceFactories_AreInvokedInSequence()
+        public async Task ResourceInspectors_AreInvokedInSequence()
         {
             var next = Next;
             next.Setup(r => r(It.IsAny<HttpContext>()))
-                .Callback<HttpContext>(
-                    c => c.Items.Add("HalFormattingContext", new HalFormattingContext
-                    {
-                        Context = new ActionContext(),
-                        Result = new ObjectResult(new object()),
-                        Executor = Mock.Of<IActionResultExecutor<ObjectResult>>()
-                    }))
+                .Callback<HttpContext>(c =>
+                {
+                    var halFeature = c.Features.Get<HalFeature>();
+                    halFeature.FormattingContext = new HalFormattingContext(
+                        new ActionContext(),
+                        new ObjectResult(new object()),
+                        Mock.Of<IActionResultExecutor<ObjectResult>>());
+                })
                 .Returns(Task.CompletedTask);
 
             int order = 0;
-            var syncFactory = new Mock<IHalResourceFactory>();
-            syncFactory.Setup(f => f.CreateResource(It.IsAny<HalMiddleware>(), It.IsAny<ActionContext>(), It.IsAny<ObjectResult>()))
+            var syncFactory = new Mock<IHalResourceInspector>();
+            syncFactory.Setup(i => i.OnInspectingResource(It.IsAny<HalResourceInspectingContext>()))
                 .Callback(() =>
                 {
                     Assert.AreEqual(0, order++);
                 })
                 .Verifiable();
 
-            var asyncFactory = new Mock<IAsyncHalResourceFactory>();
-            asyncFactory.Setup(f => f.CreateResourceAsync(It.IsAny<HalMiddleware>(), It.IsAny<ActionContext>(), It.IsAny<ObjectResult>()))
+            syncFactory.Setup(i => i.OnInspectedResource(It.IsAny<HalResourceInspectedContext>()))
+                .Callback(() =>
+                {
+                    Assert.AreEqual(2, order++);
+                })
+                .Verifiable();
+
+            var asyncFactory = new Mock<IAsyncHalResourceInspector>();
+            asyncFactory.Setup(i => i.OnResourceInspectionAsync(It.IsAny<HalResourceInspectingContext>(), It.IsAny<HalResourceInspectionDelegate>()))
                 .Callback(() =>
                 {
                     Assert.AreEqual(1, order++);
                 })
-                .Returns(Task.CompletedTask)
+                .Returns<HalResourceInspectingContext, HalResourceInspectionDelegate>((context, n) => Task.FromResult(new HalResourceInspectedContext(context)))
                 .Verifiable();
 
             var options = new HalOptions
             {
-                ResourceFactories = new List<IHalResourceFactoryMetadata>
-                 {
+                ResourceInspectors = new List<IHalResourceInspectorMetadata>
+                {
                      syncFactory.Object,
                      asyncFactory.Object
-                 }
+                }
             };
 
             var iOptions = HalOptions;
@@ -148,7 +164,8 @@ namespace Tests
                 next.Object,
                 Logger,
                 UrlHelperFactory.Object,
-                iOptions.Object);
+                iOptions.Object,
+                Constants.LoggerFactory);
 
             await middleware.Invoke(HttpContext);
             syncFactory.Verify();

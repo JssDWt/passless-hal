@@ -47,7 +47,7 @@ namespace Passless.AspNetCore.Hal.Inspectors
 
                 // Invoke the mvc pipeline. The LinkValidationFilter will short circuit 
                 // the request after the authorization filters have executed.
-                await context.MvcPipeline(linkContext);
+                await context.MvcPipeline.Pipeline(linkContext);
                 var response = linkContext.Response as HalHttpResponse;
                 if (response.Resource == LinkValidatedResult.LinkValidatedObject)
                 {

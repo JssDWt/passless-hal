@@ -53,6 +53,9 @@ namespace Passless.AspNetCore.Hal.Extensions
                 throw new ArgumentNullException(nameof(services));
             }
 
+            services.AddScoped<ResourceInspectorSelector>();
+            services.AddScoped<ResourceFactoryInvoker>();
+
             // Make sure the custom formatters can access the action context.
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
 

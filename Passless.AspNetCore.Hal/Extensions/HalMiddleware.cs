@@ -78,21 +78,13 @@ namespace Passless.AspNetCore.Hal.Extensions
                 return;
             }
 
-            // Apparently we're dealing with a HAL response now. 
-            var actionContext = halFeature.FormattingContext.Context;
-            if (actionContext == null)
-            {
-                throw new HalException("Could not establish actionContext reference.");
-            }
+            // Apparently we're dealing with a HAL response now.
+            // Invoke the resource factory.
+            var resourceFactoryInvoker = ActivatorUtilities.CreateInstance<ResourceFactoryInvoker>(
+                context.RequestServices,
+                new MvcPipeline(this.MvcPipeline));
 
-            var objectResult = halFeature.FormattingContext.Result;
-            if (objectResult == null)
-            {
-                throw new HalException("Could not establish objectResult reference.");
-            }
-
-            IResource rootResource = await ResourceFactory(actionContext, objectResult.Value, true);
-            objectResult.Value = rootResource;
+            var result = await resourceFactoryInvoker.InvokeAsync(halFeature.FormattingContext);
 
             if (context.Response.HasStarted)
             {
@@ -103,70 +95,8 @@ namespace Passless.AspNetCore.Hal.Extensions
             // Now serialize the newly created resource.
             // By executing the modified actionresult.
             await halFeature.FormattingContext.Executor.ExecuteAsync(
-                actionContext,
-                objectResult);
-        }
-
-        private async Task<IResource> ResourceFactory(ActionContext actionContext, object resourceObject, bool isRoot)
-        {
-            // TODO: Should the resourceObject actually be an objectresult?
-            if (actionContext == null)
-            {
-                throw new ArgumentNullException(nameof(actionContext));
-            }
-
-            var resourceFactoryContext = new ResourceFactoryContext
-            {
-                ActionContext = actionContext,
-                Resource = resourceObject,
-                IsRootResource = isRoot
-            };
-
-            var resource = await InvokeResourceFactory(resourceFactoryContext);
-
-            var lggr = this.loggerFactory.CreateLogger<HalResourceInspectorInvoker>();
-            var inspectors = this.halOptions.ResourceInspectors.Where(i => i != null);
-            if (isRoot)
-            {
-                inspectors = inspectors.Where(i => i.UseOnRootResource);
-            }
-            else
-            {
-                inspectors = inspectors.Where(i => i.UseOnEmbeddedResources);
-            }
-
-            var resourceInspector = new HalResourceInspectorInvoker(
-                inspectors.ToArray(),
-                lggr);
-
-            var inspectingContext = new HalResourceInspectingContext(
-                resource, actionContext, isRoot, EmbeddedResourceFactory, this.MvcPipeline, resourceObject);
-
-            var result = await resourceInspector.InspectAsync(inspectingContext);
-            return result.Resource; 
-        }
-
-        private Task<IResource> EmbeddedResourceFactory(ActionContext context, object resource)
-            => this.ResourceFactory(context, resource, false);
-
-        private async Task<IResource> InvokeResourceFactory(ResourceFactoryContext context)
-        {
-            IResource resource = null;
-
-            if (this.halOptions.ResourceFactory is IAsyncHalResourceFactory asyncFactory)
-            {
-                resource = await asyncFactory.CreateResourceAsync(context);
-            }
-            else if (this.halOptions.ResourceFactory is IHalResourceFactory syncFactory)
-            {
-                resource = syncFactory.CreateResource(context);
-            }
-            else
-            {
-                throw new HalException("Could not understand hal resource factory type. Expecting IAsyncHalResourceFactory or IHalResourceFactory.");
-            }
-
-            return resource;
+                halFeature.FormattingContext.Context,
+                result);
         }
 
         private async Task MvcPipeline(HttpContext context)

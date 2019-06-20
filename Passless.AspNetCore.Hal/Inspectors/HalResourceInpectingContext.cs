@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Passless.AspNetCore.Hal.Factories;
+using Passless.AspNetCore.Hal.Internal;
 
 namespace Passless.AspNetCore.Hal.Inspectors
 {
@@ -23,7 +24,7 @@ namespace Passless.AspNetCore.Hal.Inspectors
             ActionContext actionContext,
             bool isRootResource,
             ResourceFactory resourceFactory,
-            RequestDelegate next,
+            MvcPipeline mvcPipeline,
             object original)
         {
             this.Resource = resource
@@ -37,8 +38,8 @@ namespace Passless.AspNetCore.Hal.Inspectors
             this.ResourceFactory = resourceFactory
                 ?? throw new ArgumentNullException(nameof(resourceFactory));
 
-            this.MvcPipeline = next
-                ?? throw new ArgumentNullException(nameof(next));
+            this.MvcPipeline = mvcPipeline
+                ?? throw new ArgumentNullException(nameof(mvcPipeline));
 
             this.OriginalObject = original
                 ?? throw new ArgumentNullException(nameof(original));
@@ -72,7 +73,7 @@ namespace Passless.AspNetCore.Hal.Inspectors
         /// resource inspectors for embedded resources as well.</remarks>
         public ResourceFactory ResourceFactory { get; }
 
-        public RequestDelegate MvcPipeline { get; }
+        public MvcPipeline MvcPipeline { get; }
 
         public object OriginalObject { get; }
     }

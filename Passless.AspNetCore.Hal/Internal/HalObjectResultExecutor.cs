@@ -108,12 +108,7 @@ namespace Passless.AspNetCore.Hal.Internal
                 logger.LogDebug("Selected an IHalFormatter. Skipping ActionResult execution. That will be handled by the HAL middleware.");
 
                 // Just set the context so the middleware can handle this.
-                halFeature.FormattingContext = new HalFormattingContext
-                {
-                    Context = context,
-                    Result = result,
-                    Executor = this.executor
-                };
+                halFeature.FormattingContext = new HalFormattingContext(context, result, this.executor);
 
                 return Task.CompletedTask;
             }

@@ -103,7 +103,7 @@ namespace Passless.AspNetCore.Hal.Inspectors
                 var halContext = new HalHttpContext(context.ActionContext.HttpContext, halRequestFeature);
 
                 logger.LogDebug("About to invoke MVC pipeline with a GET request on path '{0}'.", path);
-                await context.MvcPipeline(halContext);
+                await context.MvcPipeline.Pipeline(halContext);
 
                 var response = halContext.Response as HalHttpResponse;
                 if (response.StatusCode >= 200 && response.StatusCode <= 299)
