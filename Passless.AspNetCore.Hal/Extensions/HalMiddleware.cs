@@ -22,7 +22,8 @@ namespace Passless.AspNetCore.Hal.Extensions
 
         public HalMiddleware(
             RequestDelegate next,
-            ILogger<HalMiddleware> logger)
+            ILogger<HalMiddleware> logger,
+            IOptions<HalOptions> options)
         {
             this.next = next
                 ?? throw new ArgumentNullException(
@@ -31,6 +32,12 @@ namespace Passless.AspNetCore.Hal.Extensions
 
             this.logger = logger
                 ?? throw new ArgumentNullException(nameof(logger));
+
+            if (options == null
+                || options.Value == null)
+            {
+                throw new ArgumentException("No HalOptions found. Make sure 'AddHal' is added in the ConfigureServices method.");
+            }
         }
 
         public async Task Invoke(HttpContext context)
