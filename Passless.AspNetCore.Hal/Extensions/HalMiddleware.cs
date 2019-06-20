@@ -19,15 +19,10 @@ namespace Passless.AspNetCore.Hal.Extensions
     {
         private readonly ILogger<HalMiddleware> logger;
         private RequestDelegate next;
-        private readonly IUrlHelperFactory urlHelperFactory;
-        private readonly HalOptions halOptions;
-        private readonly ILoggerFactory loggerFactory;
+
         public HalMiddleware(
             RequestDelegate next,
-            ILogger<HalMiddleware> logger,
-            IUrlHelperFactory urlHelperFactory,
-            IOptions<HalOptions> halOptions,
-            ILoggerFactory loggerFactory)
+            ILogger<HalMiddleware> logger)
         {
             this.next = next
                 ?? throw new ArgumentNullException(
@@ -36,17 +31,6 @@ namespace Passless.AspNetCore.Hal.Extensions
 
             this.logger = logger
                 ?? throw new ArgumentNullException(nameof(logger));
-
-            this.urlHelperFactory = urlHelperFactory
-                ?? throw new ArgumentNullException(nameof(urlHelperFactory));
-
-            this.halOptions = halOptions?.Value
-                ?? throw new ArgumentNullException(
-                    nameof(halOptions),
-                    "Be sure to add 'AddHal' to the 'ConfigureServices' method in the Startup class.");
-
-            this.loggerFactory = loggerFactory
-                ?? throw new ArgumentNullException(nameof(loggerFactory));
         }
 
         public async Task Invoke(HttpContext context)
