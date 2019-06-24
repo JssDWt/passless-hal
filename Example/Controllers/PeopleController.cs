@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using Example.Models;
 using Microsoft.AspNetCore.Mvc;
-using Passless.Hal;
+using Passless.AspNetCore.Hal.Attributes;
 
 namespace Example.Controllers
 {

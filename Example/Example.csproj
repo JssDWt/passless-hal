@@ -14,6 +14,6 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Passless.Hal\Passless.Hal.csproj" />
+    <ProjectReference Include="..\Passless.AspNetCore.Hal\Passless.AspNetCore.Hal.csproj" />
   </ItemGroup>
 </Project>
