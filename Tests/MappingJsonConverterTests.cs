@@ -2,8 +2,9 @@
 using System.IO;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using Passless.Hal;
-using Passless.Hal.Converters;
+using Passless.AspNetCore.Hal;
+using Passless.AspNetCore.Hal.Converters;
+using Passless.AspNetCore.Hal.Models;
 
 namespace Tests
 {

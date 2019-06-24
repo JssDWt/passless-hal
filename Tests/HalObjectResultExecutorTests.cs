@@ -10,9 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using Passless.Hal;
-using Passless.Hal.Formatters;
-using Passless.Hal.Internal;
+using Passless.AspNetCore.Hal.Formatters;
+using Passless.AspNetCore.Hal.Internal;
 
 namespace Tests
 {
@@ -47,8 +46,10 @@ namespace Tests
                 Logger);
 
             var httpContext = HalContext;
-            var actionContext = new ActionContext();
-            actionContext.HttpContext = httpContext;
+            var actionContext = new ActionContext
+            {
+                HttpContext = httpContext
+            };
             var resultObject = new object();
             var result = new ObjectResult(resultObject);
 
@@ -95,7 +96,7 @@ namespace Tests
             result.Formatters = formatters;
 
             var httpContext = HttpContext;
-            httpContext.Items.Add("HalMiddlewareRegistered", true);
+            httpContext.Features.Set<HalFeature>(new HalFeature());
 
             var formatterSelector = FormatterSelector;
             formatterSelector.Setup(f => f.SelectFormatter(
@@ -147,8 +148,9 @@ namespace Tests
                 formatterSelector.Object,
                 Logger);
 
+            var halFeature = new HalFeature();
             var httpContext = HttpContext;
-            httpContext.Items.Add("HalMiddlewareRegistered", true);
+            httpContext.Features.Set(halFeature);
             var actionContext = new ActionContext
             {
                 HttpContext = httpContext
@@ -157,10 +159,9 @@ namespace Tests
             var result = ObjectResult;
             await executor.ExecuteAsync(actionContext, result);
 
-            var output = (HalFormattingContext)httpContext.Items["HalFormattingContext"];
-            Assert.AreSame(actionContext, output.Context);
-            Assert.AreSame(result, output.Result);
-            Assert.AreSame(inner, output.Executor);
+            Assert.AreSame(actionContext, halFeature.FormattingContext.Context);
+            Assert.AreSame(result, halFeature.FormattingContext.Result);
+            Assert.AreSame(inner, halFeature.FormattingContext.Executor);
         }
 
         [Test]
@@ -186,7 +187,7 @@ namespace Tests
                 Logger);
 
             var httpContext = HttpContext;
-            httpContext.Items.Add("HalMiddlewareRegistered", true);
+            httpContext.Features.Set(new HalFeature());
             var actionContext = new ActionContext
             {
                 HttpContext = httpContext

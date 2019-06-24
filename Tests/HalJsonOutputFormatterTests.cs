@@ -9,11 +9,14 @@ using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using Passless.Hal;
-using Passless.Hal.Extensions;
-using Passless.Hal.Formatters;
+using Passless.AspNetCore.Hal;
+using Passless.AspNetCore.Hal.Extensions;
+using Passless.AspNetCore.Hal.Formatters;
+using Passless.AspNetCore.Hal.Models;
 
 namespace Tests
 {
@@ -47,26 +50,12 @@ namespace Tests
         public async Task UsesResourceJsonConverter()
         {
             var formatter = new HalJsonOutputFormatter(
-                new JsonSerializerSettings
-                {
-
-                },
+                new JsonSerializerSettings(),
                 ArrayPool<char>.Shared,
                 new HalOptions());
 
             using (var body = new MemoryStream())
             {
-                var features = new FeatureCollection();
-                features[typeof(IHttpResponseFeature)] = new HttpResponseFeature
-                {
-                    Body = body
-                };
-
-                features[typeof(IHttpRequestFeature)] = new HttpRequestFeature
-                {
-                    Headers = new HeaderDictionary()
-                };
-
                 var resource = new Resource<TestResource>
                 {
                     Data = new TestResource
@@ -75,25 +64,23 @@ namespace Tests
                     }
                 };
 
-                var serviceProvider = new ServiceCollection()
-                .AddLogging(logging =>
-                {
-                    logging.AddDebug();
-                })
-                .BuildServiceProvider();
+                var serviceProvider = new Mock<IServiceProvider>();
+                serviceProvider.Setup(p => p.GetService(typeof(ILogger<HalJsonOutputFormatter>)))
+                    .Returns(new NullLogger<HalJsonOutputFormatter>());
 
-                var httpContext = new DefaultHttpContext(features)
-                {
-                    RequestServices = serviceProvider
-                };
+                var response = new Mock<HttpResponse>();
+                response.SetupGet(r => r.Body).Returns(body);
+                var httpContext = new Mock<HttpContext>();
+                httpContext.SetupGet(c => c.Response).Returns(response.Object);
+                httpContext.SetupGet(c => c.RequestServices).Returns(serviceProvider.Object);
 
                 var writeContext = new OutputFormatterWriteContext(
-                    httpContext,
+                    httpContext.Object,
                     (s, e) => new StreamWriter(s, e, 4096, true),
                     resource.GetType(),
                     resource);
 
-                await formatter.WriteAsync(writeContext);
+                await formatter.WriteResponseBodyAsync(writeContext, Encoding.UTF8);
 
                 string expected = "{\"Content\":\"HAL-lo there\"}";
 

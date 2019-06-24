@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using Passless.Hal;
-using Passless.Hal.Extensions;
+using Passless.AspNetCore.Hal;
+using Passless.AspNetCore.Hal.Extensions;
 
 namespace Tests.Integration
 {

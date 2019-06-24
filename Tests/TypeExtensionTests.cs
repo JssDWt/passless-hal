@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
 using NUnit.Framework;
-using Passless.Hal;
-using Passless.Hal.Extensions;
+using Passless.AspNetCore.Hal;
+using Passless.AspNetCore.Hal.Extensions;
+using Passless.AspNetCore.Hal.Models;
 
 namespace Tests
 {

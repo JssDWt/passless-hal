@@ -54,7 +54,7 @@ namespace Passless.AspNetCore.Hal.Extensions
             }
 
             services.AddScoped<ResourceInspectorSelector>();
-            services.AddScoped<ResourceFactoryInvoker>();
+            services.TryAddSingleton<ResourcePipelineInvokerFactory>();
 
             // Make sure the custom formatters can access the action context.
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();

@@ -9,14 +9,19 @@ using Passless.AspNetCore.Hal.Inspectors;
 
 namespace Passless.AspNetCore.Hal.Internal
 {
-    public class ResourceFactoryInvoker
+    public class ResourcePipelineInvoker
     {
         private readonly ILoggerFactory loggerFactory;
         private readonly ResourceInspectorSelector selector;
         private readonly IHalResourceFactoryMetadata resourceFactory;
         private readonly MvcPipeline mvcPipeline;
 
-        public ResourceFactoryInvoker(
+        protected ResourcePipelineInvoker()
+        {
+
+        }
+
+        public ResourcePipelineInvoker(
             ILoggerFactory loggerFactory,
             ResourceInspectorSelector selector,
             IHalResourceFactoryMetadata resourceFactory,
@@ -35,19 +40,19 @@ namespace Passless.AspNetCore.Hal.Internal
                 ?? throw new ArgumentNullException(nameof(mvcPipeline));
         }
 
-        public async Task<ObjectResult> InvokeAsync(HalFormattingContext context)
+        public virtual async Task<ObjectResult> InvokeAsync(HalFormattingContext context)
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            IResource rootResource = await ResourceFactory(context.Context, context.Result.Value, true);
+            IResource rootResource = await ResourcePipeline(context.Context, context.Result.Value, true);
             context.Result.Value = rootResource;
             return context.Result;
         }
 
-        private async Task<IResource> ResourceFactory(ActionContext actionContext, object resourceObject, bool isRoot)
+        private async Task<IResource> ResourcePipeline(ActionContext actionContext, object resourceObject, bool isRoot)
         {
             // TODO: Should the resourceObject actually be an objectresult?
             if (actionContext == null)
@@ -79,26 +84,22 @@ namespace Passless.AspNetCore.Hal.Internal
         }
 
         private Task<IResource> EmbeddedResourceFactory(ActionContext context, object resource)
-            => this.ResourceFactory(context, resource, false);
+            => this.ResourcePipeline(context, resource, false);
 
         private async Task<IResource> InvokeResourceFactory(ResourceFactoryContext context)
         {
-            IResource resource = null;
-
             if (this.resourceFactory is IAsyncHalResourceFactory asyncFactory)
             {
-                resource = await asyncFactory.CreateResourceAsync(context);
+                return await asyncFactory.CreateResourceAsync(context);
             }
             else if (this.resourceFactory is IHalResourceFactory syncFactory)
             {
-                resource = syncFactory.CreateResource(context);
+                return syncFactory.CreateResource(context);
             }
             else
             {
                 throw new HalException($"Could not understand hal resource factory type. Expecting {nameof(IAsyncHalResourceFactory)} or {nameof(IHalResourceFactory)}.");
             }
-
-            return resource;
         }
     }
 }

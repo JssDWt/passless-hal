@@ -18,12 +18,14 @@ namespace Passless.AspNetCore.Hal.Extensions
     public class HalMiddleware
     {
         private readonly ILogger<HalMiddleware> logger;
-        private RequestDelegate next;
+        private readonly ResourcePipelineInvokerFactory resourcePipeline;
+        private readonly RequestDelegate next;
 
         public HalMiddleware(
             RequestDelegate next,
             ILogger<HalMiddleware> logger,
-            IOptions<HalOptions> options)
+            IOptions<HalOptions> options,
+            ResourcePipelineInvokerFactory resourcePipeline)
         {
             this.next = next
                 ?? throw new ArgumentNullException(
@@ -32,6 +34,9 @@ namespace Passless.AspNetCore.Hal.Extensions
 
             this.logger = logger
                 ?? throw new ArgumentNullException(nameof(logger));
+
+            this.resourcePipeline = resourcePipeline
+                ?? throw new ArgumentNullException(nameof(resourcePipeline));
 
             if (options == null
                 || options.Value == null)
@@ -56,7 +61,6 @@ namespace Passless.AspNetCore.Hal.Extensions
             context.Features[typeof(HalFeature)] = halFeature;
 
             await this.next(context);
-
             if (halFeature.FormattingContext == null)
             {
                 logger.LogDebug("Hal formatting context not found, other formatters are handling this response.");
@@ -71,11 +75,12 @@ namespace Passless.AspNetCore.Hal.Extensions
 
             // Apparently we're dealing with a HAL response now.
             // Invoke the resource factory.
-            var resourceFactoryInvoker = ActivatorUtilities.CreateInstance<ResourceFactoryInvoker>(
-                context.RequestServices,
-                new MvcPipeline(this.MvcPipeline));
-
-            var result = await resourceFactoryInvoker.InvokeAsync(halFeature.FormattingContext);
+            var resourcePipelineInvoker = resourcePipeline.Create(new MvcPipeline(this.MvcPipeline));
+            ObjectResult result = halFeature.FormattingContext.Result;
+            if (resourcePipelineInvoker != null)
+            {
+                result = await resourcePipelineInvoker.InvokeAsync(halFeature.FormattingContext);
+            }
 
             if (context.Response.HasStarted)
             {

@@ -21,7 +21,8 @@ namespace Tests
     public class HalMiddlewareTests
     {
         private Mock<RequestDelegate> Next => new Mock<RequestDelegate>();
-        private Mock<IUrlHelperFactory> UrlHelperFactory => new Mock<IUrlHelperFactory>();
+        private Mock<ResourcePipelineInvoker> Pipeline => new Mock<ResourcePipelineInvoker>();
+        private Mock<ResourcePipelineInvokerFactory> PipelineFactory => new Mock<ResourcePipelineInvokerFactory>();
         private ILogger<HalMiddleware> Logger => Constants.LoggerFactory.CreateLogger<HalMiddleware>();
         private HttpContext HttpContext => new DefaultHttpContext();
         private Mock<IOptions<HalOptions>> HalOptions
@@ -51,9 +52,8 @@ namespace Tests
             var middleware = new HalMiddleware(
                 next.Object,
                 Logger,
-                UrlHelperFactory.Object,
                 HalOptions.Object,
-                Constants.LoggerFactory);
+                PipelineFactory.Object);
 
             await middleware.Invoke(HttpContext);
             next.Verify();
@@ -69,8 +69,8 @@ namespace Tests
             var middleware = new HalMiddleware(
                 next.Object,
                 Logger,
-                UrlHelperFactory.Object,
-                HalOptions.Object);
+                HalOptions.Object,
+                PipelineFactory.Object);
 
             var httpContext = HttpContext;
             var response = httpContext.Response;
@@ -90,86 +90,97 @@ namespace Tests
             var middleware = new HalMiddleware(
                 next.Object,
                 Logger,
-                UrlHelperFactory.Object,
                 HalOptions.Object,
-                Constants.LoggerFactory);
+                PipelineFactory.Object);
 
             // If someone tries to write to the stream, this will throw.
             var responseBody = new Mock<Stream>(MockBehavior.Strict);
             responseBody.SetupGet(s => s.Length).Returns(2);
             var httpContext = HttpContext;
-            //var bytes = Encoding.UTF8.GetBytes("{}");
-            //httpContext.Response.Body.Write(bytes, 0, bytes.Length);
             httpContext.Response.Body = responseBody.Object;
+
             await middleware.Invoke(httpContext);
+            next.Verify();
         }
 
-        // TODO: Test resourcefactory is invoked.
-        // TODO: Test resourcefactory is invoked for subresources as well.
-        // TODO: Test only root resourceinspectors are invoked for the root resource.
-        // TODO: Test only embed resourceinspectors are invoked for the embedded resources.
-
         [Test]
-        public async Task ResourceInspectors_AreInvokedInSequence()
+        public async Task ResourcePipeline_CreatedAndInvoked()
         {
             var next = Next;
             next.Setup(r => r(It.IsAny<HttpContext>()))
-                .Callback<HttpContext>(c =>
+                .Returns(Task.CompletedTask)
+                .Callback<HttpContext>(context =>
                 {
-                    var halFeature = c.Features.Get<HalFeature>();
+                    var halFeature = context.Features.Get<HalFeature>();
                     halFeature.FormattingContext = new HalFormattingContext(
-                        new ActionContext(),
+                        Mock.Of<ActionContext>(),
                         new ObjectResult(new object()),
                         Mock.Of<IActionResultExecutor<ObjectResult>>());
-                })
-                .Returns(Task.CompletedTask);
+                });
 
-            int order = 0;
-            var syncFactory = new Mock<IHalResourceInspector>();
-            syncFactory.Setup(i => i.OnInspectingResource(It.IsAny<HalResourceInspectingContext>()))
-                .Callback(() =>
-                {
-                    Assert.AreEqual(0, order++);
-                })
+            var pipeline = Pipeline;
+            pipeline.Setup(p => p.InvokeAsync(It.IsAny<HalFormattingContext>()))
+                .Returns(() => Task.FromResult(new ObjectResult(new object())))
                 .Verifiable();
-
-            syncFactory.Setup(i => i.OnInspectedResource(It.IsAny<HalResourceInspectedContext>()))
-                .Callback(() =>
-                {
-                    Assert.AreEqual(2, order++);
-                })
+            var pipelineFactory = PipelineFactory;
+            pipelineFactory.Setup(p => p.Create(It.IsAny<MvcPipeline>()))
+                .Returns(pipeline.Object)
                 .Verifiable();
-
-            var asyncFactory = new Mock<IAsyncHalResourceInspector>();
-            asyncFactory.Setup(i => i.OnResourceInspectionAsync(It.IsAny<HalResourceInspectingContext>(), It.IsAny<HalResourceInspectionDelegate>()))
-                .Callback(() =>
-                {
-                    Assert.AreEqual(1, order++);
-                })
-                .Returns<HalResourceInspectingContext, HalResourceInspectionDelegate>((context, n) => Task.FromResult(new HalResourceInspectedContext(context)))
-                .Verifiable();
-
-            var options = new HalOptions
-            {
-                ResourceInspectors = new List<IHalResourceInspectorMetadata>
-                {
-                     syncFactory.Object,
-                     asyncFactory.Object
-                }
-            };
-
-            var iOptions = HalOptions;
-            iOptions.SetupGet(o => o.Value).Returns(options);
+                
             var middleware = new HalMiddleware(
                 next.Object,
                 Logger,
-                UrlHelperFactory.Object,
-                iOptions.Object,
-                Constants.LoggerFactory);
+                HalOptions.Object,
+                pipelineFactory.Object);
 
             await middleware.Invoke(HttpContext);
-            syncFactory.Verify();
-            asyncFactory.Verify();
+
+            pipelineFactory.Verify();
+            pipeline.Verify();
+        }
+
+        [Test]
+        public async Task ResourcePipeline_ResultPassedToExecutor()
+        {
+            var actionContext = Mock.Of<ActionContext>();
+            var objectResult = new ObjectResult(new object());
+            var executorMock = new Mock<IActionResultExecutor<ObjectResult>>();
+            executorMock.Setup(e => e.ExecuteAsync(actionContext, objectResult))
+                .Returns(Task.CompletedTask)
+                .Verifiable();
+
+            var formattingContext = new HalFormattingContext(
+                actionContext,
+                new ObjectResult(new object()),
+                executorMock.Object);
+
+            var next = Next;
+            next.Setup(r => r(It.IsAny<HttpContext>()))
+                .Returns(Task.CompletedTask)
+                .Callback<HttpContext>((context) =>
+                {
+                    var halFeature = context.Features.Get<HalFeature>();
+                    halFeature.FormattingContext = formattingContext;
+                });
+            
+            var pipeline = Pipeline;
+            pipeline.Setup(p => p.InvokeAsync(It.IsAny<HalFormattingContext>()))
+                .Returns(() => Task.FromResult(objectResult))
+                .Verifiable();
+            var pipelineFactory = PipelineFactory;
+            pipelineFactory.Setup(p => p.Create(It.IsAny<MvcPipeline>()))
+                .Returns(pipeline.Object)
+                .Verifiable();
+
+            var middleware = new HalMiddleware(
+                next.Object,
+                Logger,
+                HalOptions.Object,
+                pipelineFactory.Object);
+
+            await middleware.Invoke(HttpContext);
+
+            executorMock.Verify();
         }
     }
 }
