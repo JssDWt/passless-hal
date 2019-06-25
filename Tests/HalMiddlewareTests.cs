@@ -37,6 +37,21 @@ namespace Tests
         }
 
         [Test]
+        public void Ctor_ThrowsIfNull()
+        {
+            Assert.Throws<ArgumentNullException>(() => new HalMiddleware(null, Logger, HalOptions.Object, PipelineFactory.Object));
+            Assert.Throws<ArgumentNullException>(() => new HalMiddleware(Next.Object, null, HalOptions.Object, PipelineFactory.Object));
+            Assert.Throws<ArgumentNullException>(() => new HalMiddleware(Next.Object, Logger, HalOptions.Object, null));
+        }
+
+        [Test]
+        public void Ctor_GivesMissingAddHalIndication()
+        {
+            var ex = Assert.Throws<ArgumentException>(() => new HalMiddleware(Next.Object, Logger, null, PipelineFactory.Object));
+            StringAssert.Contains("AddHal", ex.Message);
+        }
+
+        [Test]
         public async Task SetsHalFeature()
         {
             var next = Next;

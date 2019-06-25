@@ -19,10 +19,22 @@ namespace Passless.AspNetCore.Hal.Extensions
             IOptions<MvcJsonOptions> jsonOptions,
             ArrayPool<char> charPool)
         {
-            this.halOptions = halOptions?.Value
-                ?? throw new ArgumentNullException(nameof(halOptions));
-            this.jsonOptions = jsonOptions?.Value 
-                ?? throw new ArgumentNullException(nameof(jsonOptions));
+            if (halOptions == null)
+            {
+                throw new ArgumentNullException(nameof(halOptions));
+            }
+
+            this.halOptions = halOptions.Value
+                ?? throw new ArgumentException("Value cannot be null.", nameof(halOptions));
+
+            if (jsonOptions == null)
+            {
+                throw new ArgumentNullException(nameof(jsonOptions));
+            }
+
+            this.jsonOptions = jsonOptions.Value 
+                ?? throw new ArgumentException("Value cannot be null.", nameof(jsonOptions));
+
             this.charPool = charPool 
                 ?? throw new ArgumentNullException(nameof(charPool));
         }
@@ -42,7 +54,7 @@ namespace Passless.AspNetCore.Hal.Extensions
 
         public void PostConfigure(string name, MvcOptions options)
         {
-            options.Filters.AddService<LinkValidationFilter>();
+            options.Filters.AddService<LinkValidationFilter>(0);
         }
     }
 }
