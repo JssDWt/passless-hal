@@ -32,7 +32,11 @@ namespace Tests
         {
             var resourceFactory = ResourceFactory.Object;
             IConfigureOptions<HalOptions> setup = new HalSetup(ServiceProvider.Object, resourceFactory);
-            var options = new HalOptions();
+            var options = new HalOptions
+            {
+                UseDefaultResourceFactory = true,
+                UseDefaultResourceInspectors = false
+            };
 
             setup.Configure(options);
             Assert.AreSame(resourceFactory, options.ResourceFactory);
@@ -44,7 +48,8 @@ namespace Tests
             IConfigureOptions<HalOptions> setup = new HalSetup(ServiceProvider.Object, ResourceFactory.Object);
             var options = new HalOptions
             {
-                UseDefaultResourceFactory = false
+                UseDefaultResourceFactory = false,
+                UseDefaultResourceInspectors = false
             };
 
             setup.Configure(options);
@@ -58,6 +63,7 @@ namespace Tests
             IConfigureOptions<HalOptions> setup = new HalSetup(ServiceProvider.Object, resourceFactory);
             var options = new HalOptions
             {
+                UseDefaultResourceFactory = false,
                 UseDefaultResourceInspectors = false
             };
 
