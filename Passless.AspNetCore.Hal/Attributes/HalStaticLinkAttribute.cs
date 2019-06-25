@@ -13,7 +13,5 @@ namespace Passless.AspNetCore.Hal.Attributes
         }
 
         public string Url { get; }
-
-        public override string GetLinkUri(object obj, IUrlHelper url) => this.Url;
     }
 }

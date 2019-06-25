@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Passless.AspNetCore.Hal.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
-    public abstract class HalEmbedAttribute : Attribute
+    public abstract class HalEmbedAttribute : Attribute, IHalAttribute
     {
         protected HalEmbedAttribute(string rel)
         {
@@ -16,6 +16,6 @@ namespace Passless.AspNetCore.Hal.Attributes
 
         public bool IncludeLink { get; set; }
 
-        public abstract string GetEmbedUri(IUrlHelper url);
+        public bool IsSingular { get; set; }
     }
 }

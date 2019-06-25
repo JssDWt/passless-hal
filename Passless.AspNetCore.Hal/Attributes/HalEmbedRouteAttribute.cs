@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Passless.AspNetCore.Hal.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
-    public class HalEmbedRouteAttribute : HalEmbedAttribute
+    public class HalEmbedRouteAttribute : HalEmbedAttribute, IRouteDescriptor
     {
         public HalEmbedRouteAttribute(string rel, string routeName)
             : base(rel)
@@ -15,14 +15,6 @@ namespace Passless.AspNetCore.Hal.Attributes
 
         public string RouteName { get; }
 
-        public override string GetEmbedUri(IUrlHelper url)
-        {
-            if (url == null)
-            {
-                throw new ArgumentNullException(nameof(url));
-            }
-
-            return url.RouteUrl(this.RouteName);
-        }
+        public string Parameter { get; set; }
     }
 }

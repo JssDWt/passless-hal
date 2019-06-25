@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Passless.AspNetCore.Hal.Attributes
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = false, AllowMultiple = true)]
-    public class HalEmbedActionAttribute : HalEmbedAttribute
+    public class HalEmbedActionAttribute : HalEmbedAttribute, IActionDescriptor
     {
         public HalEmbedActionAttribute(string rel, string action)
             : base(rel)
@@ -18,20 +18,6 @@ namespace Passless.AspNetCore.Hal.Attributes
 
         public string Controller { get; set; }
 
-        public override string GetEmbedUri(IUrlHelper url)
-        {
-            if (url == null)
-            {
-                throw new ArgumentNullException(nameof(url));
-            }
-
-            if (this.Controller == null)
-            {
-                return url.Action(this.Action);
-            }
-
-            var result = url.Action(this.Action, this.Controller);
-            return result;
-        }
+        public string Parameter { get; set; }
     }
 }

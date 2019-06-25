@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Logging;
 using Passless.AspNetCore.Hal.Attributes;
+using Passless.AspNetCore.Hal.Internal;
 using Passless.AspNetCore.Hal.Models;
 
 namespace Passless.AspNetCore.Hal.Inspectors
@@ -14,16 +15,20 @@ namespace Passless.AspNetCore.Hal.Inspectors
     {
         private readonly IUrlHelperFactory urlHelperFactory;
         private readonly ILogger<AttributeLinkInspector> logger;
+        private readonly LinkService linkService;
 
         public AttributeLinkInspector(
             IUrlHelperFactory urlHelperFactory,
-            ILogger<AttributeLinkInspector> logger)
+            ILogger<AttributeLinkInspector> logger,
+            LinkService linkService)
         {
             this.urlHelperFactory = urlHelperFactory
                 ?? throw new ArgumentNullException(nameof(urlHelperFactory));
 
             this.logger = logger
                 ?? throw new ArgumentNullException(nameof(logger));
+            this.linkService = linkService
+                ?? throw new ArgumentNullException(nameof(linkService));
         }
 
         public bool UseOnEmbeddedResources => true;
@@ -58,37 +63,27 @@ namespace Passless.AspNetCore.Hal.Inspectors
                 throw new HalException("Could not establish ControllerActionDescriptor reference.");
             }
 
-            var urlHelper = this.urlHelperFactory.GetUrlHelper(context.ActionContext);
-            var classAttributes = descriptor.ControllerTypeInfo.GetCustomAttributes<HalLinkAttribute>(false);
-            var methodAttributes = descriptor.MethodInfo.GetCustomAttributes<HalLinkAttribute>(false);
-            var attributes = classAttributes.Concat(methodAttributes).ToList();
+            var links = linkService.GetLinks<HalLinkAttribute>(descriptor, context.ActionContext, context.OriginalObject);
 
-            logger.LogDebug(
-                "Found {0} HalLink attributes on class '{1}', method '{2}'.",
-                attributes.Count,
-                descriptor.ControllerTypeInfo,
-                descriptor.MethodInfo);
-
-            if (context.Resource.Links == null && attributes.Count > 0)
+            if (context.Resource.Links == null && links.Count > 0)
             {
                 context.Resource.Links = new List<ILink>();
             }
 
-            foreach (var halLink in attributes)
+            foreach (var link in links)
             {
-                var path = halLink.GetLinkUri(context.OriginalObject, urlHelper);
-                var link = new Link(halLink.Rel, path);
-                context.Resource.Links.Add(link);
-                if (halLink.IsSingular)
+                var hlink = new Link(link.Rel, link.Uri);
+                context.Resource.Links.Add(hlink);
+                if (link.IsSingular)
                 {
                     if (context.Resource.SingularRelations == null)
                     {
                         context.Resource.SingularRelations = new HashSet<string>();
                     }
 
-                    if (!context.Resource.SingularRelations.Contains(halLink.Rel))
+                    if (!context.Resource.SingularRelations.Contains(link.Rel))
                     {
-                        context.Resource.SingularRelations.Add(halLink.Rel);
+                        context.Resource.SingularRelations.Add(link.Rel);
                     }
                 }
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -19,15 +20,20 @@ namespace Passless.AspNetCore.Hal.Inspectors
     {
         private readonly IUrlHelperFactory urlHelperFactory;
         private readonly ILogger<AttributeEmbedInspector> logger;
+        private readonly LinkService linkService;
+
         public AttributeEmbedInspector(
             IUrlHelperFactory urlHelperFactory,
-            ILogger<AttributeEmbedInspector> logger)
+            ILogger<AttributeEmbedInspector> logger,
+            LinkService linkService)
         {
+            
             this.urlHelperFactory = urlHelperFactory
                 ?? throw new ArgumentNullException(nameof(urlHelperFactory));
 
             this.logger = logger
                 ?? throw new ArgumentNullException(nameof(logger));
+            this.linkService = linkService ?? throw new ArgumentNullException(nameof(linkService));
         }
 
         public bool UseOnEmbeddedResources => false;
@@ -77,32 +83,21 @@ namespace Passless.AspNetCore.Hal.Inspectors
             {
                 throw new ArgumentException("Context does not contain the mvc pipeline.", nameof(context));
             }
-
-            var classAttributes = descriptor.ControllerTypeInfo.GetCustomAttributes<HalEmbedAttribute>(false);
-            var methodAttributes = descriptor.MethodInfo.GetCustomAttributes<HalEmbedAttribute>(false);
-            var attributes = classAttributes.Concat(methodAttributes).ToList();
-
-            logger.LogDebug(
-                "Found {0} HalEmbed attributes on class '{1}', method '{2}'.",
-                attributes.Count,
-                descriptor.ControllerTypeInfo,
-                descriptor.MethodInfo);
-
+            
             var requestFeature = context.ActionContext.HttpContext.Features.Get<IHttpRequestFeature>();
-            var urlHelper = urlHelperFactory.GetUrlHelper(context.ActionContext);
-            foreach (var halEmbed in attributes)
-            {
-                var path = halEmbed.GetEmbedUri(urlHelper);
+            var links = linkService.GetLinks<HalEmbedAttribute>(descriptor, context.ActionContext, context.OriginalObject);
 
+            foreach (var link in links)
+            {
                 var halRequestFeature = new HalHttpRequestFeature(requestFeature)
                 {
-                    Method = "GET",
-                    Path = path
+                    Method = "GET", 
+                    Path = link.Uri
                 };
 
                 var halContext = new HalHttpContext(context.ActionContext.HttpContext, halRequestFeature);
 
-                logger.LogDebug("About to invoke MVC pipeline with a GET request on path '{0}'.", path);
+                logger.LogDebug("About to invoke MVC pipeline with a GET request on path '{0}'.", link.Uri);
                 await context.MvcPipeline.Pipeline(halContext);
 
                 var response = halContext.Response as HalHttpResponse;
@@ -110,23 +105,23 @@ namespace Passless.AspNetCore.Hal.Inspectors
                 {
                     logger.LogDebug("MVC pipeline returned success status code {0}. Invoking HAL resource factory.", response.StatusCode);
                     IResource embedded = await context.ResourceFactory(response.ActionContext, response.Resource);
-                    embedded.Rel = halEmbed.Rel;
+                    embedded.Rel = link.Rel;
 
                     if (embedded is IResourceCollection collection)
                     {
                         if (collection.Collection != null)
                         {
-                            logger.LogDebug("Embedding collection of {0} resources to rel '{0}'", collection.Collection.Count, halEmbed.Rel);
+                            logger.LogDebug("Embedding collection of {0} resources to rel '{0}'", collection.Collection.Count, link.Rel);
                             foreach (var item in collection.Collection)
                             {
-                                item.Rel = halEmbed.Rel;
+                                item.Rel = link.Rel;
                                 context.Resource.Embedded.Add(item);
                             }
                         }
                     }
                     else
                     {
-                        logger.LogDebug("Embedding resource to rel '{0}'", halEmbed.Rel);
+                        logger.LogDebug("Embedding resource to rel '{0}'", link.Rel);
                         context.Resource.Embedded.Add(embedded);
                     }
                 }

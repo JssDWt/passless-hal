@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using Passless.AspNetCore.Hal.Attributes;
 using Passless.AspNetCore.Hal.Factories;
 using Passless.AspNetCore.Hal.FeatureFlags;
 using Passless.AspNetCore.Hal.Internal;
@@ -53,8 +54,13 @@ namespace Passless.AspNetCore.Hal.Extensions
                 throw new ArgumentNullException(nameof(services));
             }
 
-            services.AddScoped<ResourceInspectorSelector>();
+            services.TryAddSingleton<ResourceInspectorSelector>();
             services.TryAddSingleton<ResourcePipelineInvokerFactory>();
+            services.TryAddSingleton<LinkService>();
+            services.TryAddSingleton<ParameterParser>();
+            services.TryAddSingleton<ValueMapper>();
+            services.TryAddSingleton<IUriService<IActionDescriptor>, ActionUriService>();
+            services.TryAddSingleton<IUriService<IRouteDescriptor>, RouteUriService>();
 
             // Make sure the custom formatters can access the action context.
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
