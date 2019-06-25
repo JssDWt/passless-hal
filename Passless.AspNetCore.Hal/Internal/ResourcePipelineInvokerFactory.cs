@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Passless.AspNetCore.Hal.Inspectors;
 
 namespace Passless.AspNetCore.Hal.Internal
 {

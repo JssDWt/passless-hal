@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using Passless.AspNetCore.Hal.Internal;
 
 namespace Passless.AspNetCore.Hal.Attributes
 {

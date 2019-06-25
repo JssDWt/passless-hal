@@ -32,7 +32,7 @@ namespace Tests
         }
 
         [Test]
-        public void Controller_CanGetSet()
+        public void Controller_GetSet()
         {
             var att = new HalLinkActionAttribute("rel", "action");
             att.Controller = "Controller";
@@ -41,40 +41,37 @@ namespace Tests
         }
 
         [Test]
-        public void GetEmbedUri_ThrowsIfNull()
+        public void IsSingular_DefaultFalse()
         {
             var att = new HalLinkActionAttribute("rel", "action");
-            Assert.Throws<ArgumentNullException>(() => att.GetLinkUri(new object(), null));
+
+            Assert.AreEqual(false, att.IsSingular);
         }
 
         [Test]
-        public void GetEmbedUri_InvokesUrlHelper()
+        public void IsSingular_GetSet()
         {
             var att = new HalLinkActionAttribute("rel", "action");
-            var urlHelper = new Mock<IUrlHelper>();
-            urlHelper.Setup(u => u.Action(It.IsAny<UrlActionContext>()))
-                .Returns("")
-                .Verifiable();
+            att.IsSingular = true;
 
-            att.GetLinkUri(new object(), urlHelper.Object);
-            urlHelper.Verify();
+            Assert.AreEqual(true, att.IsSingular);
         }
 
         [Test]
-        public void GetEmbedUri_WithController_InvokesUrlHelper()
+        public void Parameter_DefaultNull()
         {
-            var att = new HalLinkActionAttribute("rel", "action")
-            {
-                Controller = "controller"
-            };
+            var att = new HalLinkActionAttribute("rel", "action");
 
-            var urlHelper = new Mock<IUrlHelper>();
-            urlHelper.Setup(u => u.Action(It.IsAny<UrlActionContext>()))
-                .Returns("")
-                .Verifiable();
+            Assert.IsNull(att.Parameter);
+        }
 
-            att.GetEmbedUri(urlHelper.Object);
-            urlHelper.Verify();
+        [Test]
+        public void Parameter_GetSet()
+        {
+            var att = new HalLinkActionAttribute("rel", "action");
+            att.Parameter = "blah";
+
+            Assert.AreEqual("blah", att.Parameter);
         }
     }
 }

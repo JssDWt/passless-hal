@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 
-namespace Passless.AspNetCore.Hal.Internal
+namespace Passless.AspNetCore.Hal.Inspectors
 {
     public class MvcPipeline
     {

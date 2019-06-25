@@ -32,23 +32,54 @@ namespace Tests
         }
 
         [Test]
-        public void GetEmbedUri_ThrowsIfNull()
+        public void IncludeLink_DefaultFalse()
         {
             var att = new HalEmbedRouteAttribute("rel", "routeName");
-            Assert.Throws<ArgumentNullException>(() => att.GetEmbedUri(null));
+
+            Assert.AreEqual(false, att.IncludeLink);
         }
 
         [Test]
-        public void GetEmbedUri_InvokesUrlHelper()
+        public void IncludeLink_GetSet()
         {
             var att = new HalEmbedRouteAttribute("rel", "routeName");
-            var urlHelper = new Mock<IUrlHelper>();
-            urlHelper.Setup(u => u.RouteUrl(It.IsAny<UrlRouteContext>()))
-                .Returns("")
-                .Verifiable();
+            att.IncludeLink = true;
+            
+            Assert.AreEqual(true, att.IncludeLink);
+        }
 
-            att.GetEmbedUri(urlHelper.Object);
-            urlHelper.Verify();
+        [Test]
+        public void IsSingular_DefaultFalse()
+        {
+            var att = new HalEmbedRouteAttribute("rel", "routeName");
+
+            Assert.AreEqual(false, att.IsSingular);
+        }
+
+        [Test]
+        public void IsSingular_GetSet()
+        {
+            var att = new HalEmbedRouteAttribute("rel", "routeName");
+            att.IsSingular = true;
+            
+            Assert.AreEqual(true, att.IsSingular);
+        }
+
+        [Test]
+        public void Parameter_DefaultNull()
+        {
+            var att = new HalEmbedRouteAttribute("rel", "routeName");
+
+            Assert.IsNull(att.Parameter);
+        }
+
+        [Test]
+        public void Parameter_GetSet()
+        {
+            var att = new HalEmbedRouteAttribute("rel", "routeName");
+            att.Parameter = "blah";
+            
+            Assert.AreEqual("blah", att.Parameter);
         }
     }
 }

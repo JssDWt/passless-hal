@@ -32,49 +32,63 @@ namespace Tests
         }
 
         [Test]
-        public void Controller_CanGetSet()
+        public void Controller_GetSet()
         {
             var att = new HalEmbedActionAttribute("rel", "action");
             att.Controller = "Controller";
-
+            
             Assert.AreEqual(att.Controller, "Controller");
         }
 
         [Test]
-        public void GetEmbedUri_ThrowsIfNull()
+        public void IncludeLink_DefaultFalse()
         {
             var att = new HalEmbedActionAttribute("rel", "action");
-            Assert.Throws<ArgumentNullException>(() => att.GetEmbedUri(null));
-        }
-        
-        [Test]
-        public void GetEmbedUri_InvokesUrlHelper()
-        {
-            var att = new HalEmbedActionAttribute("rel", "action");
-            var urlHelper = new Mock<IUrlHelper>();
-            urlHelper.Setup(u => u.Action(It.IsAny<UrlActionContext>()))
-                .Returns("")
-                .Verifiable();
 
-            att.GetEmbedUri(urlHelper.Object);
-            urlHelper.Verify();
+            Assert.AreEqual(false, att.IncludeLink);
         }
 
         [Test]
-        public void GetEmbedUri_WithController_InvokesUrlHelper()
+        public void IncludeLink_GetSet()
         {
-            var att = new HalEmbedActionAttribute("rel", "action")
-            {
-                Controller = "controller"
-            };
+            var att = new HalEmbedActionAttribute("rel", "action");
+            att.IncludeLink = true;
 
-            var urlHelper = new Mock<IUrlHelper>();
-            urlHelper.Setup(u => u.Action(It.IsAny<UrlActionContext>()))
-                .Returns("")
-                .Verifiable();
+            Assert.AreEqual(true, att.IncludeLink);
+        }
 
-            att.GetEmbedUri(urlHelper.Object);
-            urlHelper.Verify();
+        [Test]
+        public void IsSingular_DefaultFalse()
+        {
+            var att = new HalEmbedActionAttribute("rel", "action");
+
+            Assert.AreEqual(false, att.IsSingular);
+        }
+
+        [Test]
+        public void IsSingular_GetSet()
+        {
+            var att = new HalEmbedActionAttribute("rel", "action");
+            att.IsSingular = true;
+
+            Assert.AreEqual(true, att.IsSingular);
+        }
+
+        [Test]
+        public void Parameter_DefaultNull()
+        {
+            var att = new HalEmbedActionAttribute("rel", "action");
+
+            Assert.IsNull(att.Parameter);
+        }
+
+        [Test]
+        public void Parameter_GetSet()
+        {
+            var att = new HalEmbedActionAttribute("rel", "action");
+            att.Parameter = "blah";
+
+            Assert.AreEqual("blah", att.Parameter);
         }
     }
 }

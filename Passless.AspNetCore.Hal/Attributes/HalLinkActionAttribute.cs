@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
+using Passless.AspNetCore.Hal.Internal;
 
 namespace Passless.AspNetCore.Hal.Attributes
 {
