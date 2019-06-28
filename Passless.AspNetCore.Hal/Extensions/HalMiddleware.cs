@@ -3,12 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Passless.AspNetCore.Hal.Factories;
-using Passless.AspNetCore.Hal.FeatureFlags;
 using Passless.AspNetCore.Hal.Inspectors;
 using Passless.AspNetCore.Hal.Internal;
 

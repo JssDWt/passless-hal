@@ -3,10 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
-using Passless.AspNetCore.Hal.Attributes;
 using Passless.AspNetCore.Hal.Factories;
-using Passless.AspNetCore.Hal.FeatureFlags;
 using Passless.AspNetCore.Hal.Internal;
 
 namespace Passless.AspNetCore.Hal.Extensions
