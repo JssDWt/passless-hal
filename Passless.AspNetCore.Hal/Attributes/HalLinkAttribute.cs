@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Passless.AspNetCore.Hal.Attributes
 {
@@ -13,8 +11,14 @@ namespace Passless.AspNetCore.Hal.Attributes
                 ?? throw new ArgumentNullException(nameof(rel));
         }
 
+        /// <summary>
+        /// Gets the relation of the embedded resource.
+        /// </summary>
         public string Rel { get; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the relation is singular.
+        /// </summary>
         public virtual bool IsSingular { get; set; }
     }
 }
