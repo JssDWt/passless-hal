@@ -27,6 +27,5 @@
     <Folder Include="Inspectors\" />
     <Folder Include="Models\" />
     <Folder Include="Attributes\" />
-    <Folder Include="FeatureFlags\" />
   </ItemGroup>
 </Project>

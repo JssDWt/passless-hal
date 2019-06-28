@@ -73,7 +73,7 @@ namespace Passless.AspNetCore.Hal.Extensions
             {
                 services.Configure(halOptionsBuilder);
             }
-
+            
             // registers the custom formatter(s)
             services.ConfigureOptions<HalMvcSetup>();
 
