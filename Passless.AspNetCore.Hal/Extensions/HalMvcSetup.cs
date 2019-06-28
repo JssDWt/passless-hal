@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
 using Passless.AspNetCore.Hal.Formatters;
 using Passless.AspNetCore.Hal.Internal;

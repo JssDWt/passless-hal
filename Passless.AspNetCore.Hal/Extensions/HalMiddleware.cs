@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,6 @@ using Passless.AspNetCore.Hal.Internal;
 
 namespace Passless.AspNetCore.Hal.Extensions
 {
-    // TODO: Build an inspector that checks the permissions for a link, by invoking all filters.
     public class HalMiddleware
     {
         private readonly ILogger<HalMiddleware> logger;

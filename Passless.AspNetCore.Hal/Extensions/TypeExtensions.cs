@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace Passless.AspNetCore.Hal.Extensions
 {
     public static class TypeExtensions

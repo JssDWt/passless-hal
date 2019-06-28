@@ -10,9 +10,28 @@ namespace Passless.AspNetCore.Hal.Extensions
 {
     public static class MvcBuilderExtensions
     {
+        /// <summary>
+        /// Adds HAL support.
+        /// </summary>
+        /// <param name="builder">The mvc builder</param>
+        /// <returns>The mvc builder.</returns>
+        /// <remarks>
+        /// Adding HAL will make the HAL formatter the default formatter for <see cref="IResource"/> instances.
+        /// It allows to return <see cref="IResource"/> objects from controllers in order to return a HAL response.
+        /// </remarks>
         public static IMvcBuilder AddHal(this IMvcBuilder builder)
             => AddHal(builder, null);
 
+        /// <summary>
+        /// Adds HAL support.
+        /// </summary>
+        /// <param name="builder">The mvc builder.</param>
+        /// <param name="halOptionsBuilder">options modifier.</param>
+        /// <returns>The mvc builder.</returns>
+        /// <remarks>
+        /// Adding HAL will make the HAL formatter the default formatter for <see cref="IResource"/> instances.
+        /// It allows to return <see cref="IResource"/> objects from controllers in order to return a HAL response.
+        /// </remarks>
         public static IMvcBuilder AddHal(
             this IMvcBuilder builder,
             Action<HalOptions> halOptionsBuilder)
@@ -27,9 +46,28 @@ namespace Passless.AspNetCore.Hal.Extensions
             return builder;
         }
 
+        /// <summary>
+        /// Adds HAL support.
+        /// </summary>
+        /// <param name="builder">The mvc builder</param>
+        /// <returns>The mvc builder.</returns>
+        /// <remarks>
+        /// Adding HAL will make the HAL formatter the default formatter for <see cref="IResource"/> instances.
+        /// It allows to return <see cref="IResource"/> objects from controllers in order to return a HAL response.
+        /// </remarks>
         public static IMvcCoreBuilder AddHal(this IMvcCoreBuilder builder)
             => AddHal(builder, null);
 
+        /// <summary>
+        /// Adds HAL support.
+        /// </summary>
+        /// <param name="builder">The mvc builder.</param>
+        /// <param name="halOptionsBuilder">options modifier.</param>
+        /// <returns>The mvc builder.</returns>
+        /// <remarks>
+        /// Adding HAL will make the HAL formatter the default formatter for <see cref="IResource"/> instances.
+        /// It allows to return <see cref="IResource"/> objects from controllers in order to return a HAL response.
+        /// </remarks>
         public static IMvcCoreBuilder AddHal(
             this IMvcCoreBuilder builder,
             Action<HalOptions> halOptionsBuilder)

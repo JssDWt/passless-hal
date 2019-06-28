@@ -44,6 +44,13 @@ namespace Tests
         }
 
         [Test]
+        public void ResourceInspectors_ThrowsIfNull()
+        {
+            var options = new HalOptions();
+            Assert.Throws<ArgumentNullException>(() => options.ResourceInspectors = null);
+        }
+
+        [Test]
         public void ResourceInspectors_GetSet()
         {
             var options = new HalOptions();
