@@ -53,7 +53,7 @@ namespace Tests
                     Mock.Of<IResource>(),
                     Mock.Of<ActionContext>(),
                     true,
-                    Mock.Of<ResourceFactory>(),
+                    Mock.Of<ResourcePipeline>(),
                     new MvcPipeline((HttpContext context) => Task.CompletedTask),
                     Mock.Of<object>()));
 

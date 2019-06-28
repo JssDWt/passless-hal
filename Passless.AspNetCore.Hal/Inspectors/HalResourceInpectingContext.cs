@@ -23,7 +23,7 @@ namespace Passless.AspNetCore.Hal.Inspectors
             IResource resource,
             ActionContext actionContext,
             bool isRootResource,
-            ResourceFactory resourceFactory,
+            ResourcePipeline resourcePipeline,
             MvcPipeline mvcPipeline,
             object original)
         {
@@ -35,8 +35,8 @@ namespace Passless.AspNetCore.Hal.Inspectors
 
             this.IsRootResource = isRootResource;
 
-            this.ResourceFactory = resourceFactory
-                ?? throw new ArgumentNullException(nameof(resourceFactory));
+            this.EmbeddedResourcePipeline = resourcePipeline
+                ?? throw new ArgumentNullException(nameof(resourcePipeline));
 
             this.MvcPipeline = mvcPipeline
                 ?? throw new ArgumentNullException(nameof(mvcPipeline));
@@ -71,7 +71,7 @@ namespace Passless.AspNetCore.Hal.Inspectors
         /// <remarks>It is recommended to use the resource factory to create embedded resources,
         /// instead of creating an IResource object yourself. In order to be able to use the 
         /// resource inspectors for embedded resources as well.</remarks>
-        public ResourceFactory ResourceFactory { get; }
+        public ResourcePipeline EmbeddedResourcePipeline { get; }
 
         public MvcPipeline MvcPipeline { get; }
 

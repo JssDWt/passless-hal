@@ -5,7 +5,6 @@ namespace Passless.AspNetCore.Hal.Inspectors
 {
     public class HalResourceInspectedContext
     {
-
         public HalResourceInspectedContext(HalResourceInspectingContext context)
         {
             if (context == null)

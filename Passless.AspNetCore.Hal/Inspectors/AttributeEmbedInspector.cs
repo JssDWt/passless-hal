@@ -103,7 +103,7 @@ namespace Passless.AspNetCore.Hal.Inspectors
                 if (response.StatusCode >= 200 && response.StatusCode <= 299)
                 {
                     logger.LogDebug("MVC pipeline returned success status code {0}. Invoking HAL resource factory.", response.StatusCode);
-                    IResource embedded = await context.ResourceFactory(response.ActionContext, response.Resource);
+                    IResource embedded = await context.EmbeddedResourcePipeline(response.ActionContext, response.Resource);
                     embedded.Rel = link.Rel;
 
                     if (embedded is IResourceCollection collection)
