@@ -1,9 +1,12 @@
 ﻿using System;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using Passless.AspNetCore.Hal.Extensions;
 using Passless.AspNetCore.Hal.Factories;
+using Passless.AspNetCore.Hal.Inspectors;
+using Passless.AspNetCore.Hal.Internal;
 
 namespace Tests
 {
@@ -41,6 +44,76 @@ namespace Tests
             Assert.AreEqual(0, options.ResourceInspectors.Count);
         }
 
-        // TODO: Test adding default resourceinspectors.
+        [Test]
+        public void Configure_UseDefaultResourceInspectors_AddsAttributeEmbedInspector()
+        {
+            var services = new ServiceCollection();
+            services.AddMvcCore();
+            services.AddLogging();
+            services.AddSingleton(Mock.Of<LinkService>());
+            var provider = services.BuildServiceProvider();
+            IConfigureOptions<HalOptions> setup = new HalSetup(provider, ResourceFactory.Object);
+            var options = new HalOptions
+            {
+                UseDefaultResourceInspectors = true
+            };
+
+            setup.Configure(options);
+            Assert.That(options.ResourceInspectors, Has.One.InstanceOf<AttributeEmbedInspector>());
+        }
+
+        [Test]
+        public void Configure_UseDefaultResourceInspectors_AddsAttributeLinkInspector()
+        {
+            var services = new ServiceCollection();
+            services.AddMvcCore();
+            services.AddLogging();
+            services.AddSingleton(Mock.Of<LinkService>());
+            var provider = services.BuildServiceProvider();
+            IConfigureOptions<HalOptions> setup = new HalSetup(provider, ResourceFactory.Object);
+            var options = new HalOptions
+            {
+                UseDefaultResourceInspectors = true
+            };
+
+            setup.Configure(options);
+            Assert.That(options.ResourceInspectors, Has.One.InstanceOf<AttributeLinkInspector>());
+        }
+
+        [Test]
+        public void Configure_UseDefaultResourceInspectors_AddsResourceValidationInspector()
+        {
+            var services = new ServiceCollection();
+            services.AddMvcCore();
+            services.AddLogging();
+            services.AddSingleton(Mock.Of<LinkService>());
+            var provider = services.BuildServiceProvider();
+            IConfigureOptions<HalOptions> setup = new HalSetup(provider, ResourceFactory.Object);
+            var options = new HalOptions
+            {
+                UseDefaultResourceInspectors = true
+            };
+
+            setup.Configure(options);
+            Assert.That(options.ResourceInspectors, Has.One.InstanceOf<ResourceValidationInspector>());
+        }
+
+        [Test]
+        public void Configure_UseDefaultResourceInspectors_AddsLinkPermissionInspector()
+        {
+            var services = new ServiceCollection();
+            services.AddMvcCore();
+            services.AddLogging();
+            services.AddSingleton(Mock.Of<LinkService>());
+            var provider = services.BuildServiceProvider();
+            IConfigureOptions<HalOptions> setup = new HalSetup(provider, ResourceFactory.Object);
+            var options = new HalOptions
+            {
+                UseDefaultResourceInspectors = true
+            };
+
+            setup.Configure(options);
+            Assert.That(options.ResourceInspectors, Has.One.InstanceOf<LinkPermissionInspector>());
+        }
     }
 }

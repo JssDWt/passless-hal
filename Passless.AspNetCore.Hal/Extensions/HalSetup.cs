@@ -8,8 +8,8 @@ namespace Passless.AspNetCore.Hal.Extensions
 {
     public class HalSetup : IConfigureOptions<HalOptions>
     {
-        private IHalResourceFactoryMetadata resourceFactory;
-        private IServiceProvider serviceProvider;
+        private readonly IHalResourceFactoryMetadata resourceFactory;
+        private readonly IServiceProvider serviceProvider;
         public HalSetup(
             IServiceProvider serviceProvider, 
             IHalResourceFactoryMetadata resourceFactory)
