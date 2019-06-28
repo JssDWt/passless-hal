@@ -16,6 +16,11 @@ namespace Passless.AspNetCore.Hal.Internal
         private readonly IUriService<IRouteDescriptor> routeService;
         private readonly IUrlHelperFactory urlHelperFactory;
 
+        protected LinkService()
+        {
+
+        }
+
         public LinkService(
             IUriService<IActionDescriptor> actionService,
             IUriService<IRouteDescriptor> routeService,

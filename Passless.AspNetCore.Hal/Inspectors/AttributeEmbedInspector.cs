@@ -27,7 +27,6 @@ namespace Passless.AspNetCore.Hal.Inspectors
             ILogger<AttributeEmbedInspector> logger,
             LinkService linkService)
         {
-            
             this.urlHelperFactory = urlHelperFactory
                 ?? throw new ArgumentNullException(nameof(urlHelperFactory));
 

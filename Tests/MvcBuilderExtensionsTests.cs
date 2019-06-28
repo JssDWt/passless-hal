@@ -28,6 +28,8 @@ namespace Tests
             collection.AddMvcCore().AddHal();
 
             // Assert
+            Assert.That(collection, Has.One.With.Property(nameof(ServiceDescriptor.ServiceType)).EqualTo(typeof(ResourceInspectorSelector)));
+
             Assert.NotNull(collection.SingleOrDefault(sd => sd.ServiceType == typeof(ResourceInspectorSelector)));
         }
 
