@@ -28,11 +28,6 @@ namespace Passless.AspNetCore.Hal.Extensions
                 throw new ArgumentNullException(nameof(options));
             }
 
-            if (options.UseDefaultResourceFactory)
-            {
-                options.ResourceFactory = resourceFactory;
-            }
-
             if (options.UseDefaultResourceInspectors)
             {
                 // Add links using attributes.

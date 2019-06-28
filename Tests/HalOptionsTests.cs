@@ -37,22 +37,6 @@ namespace Tests
         }
 
         [Test]
-        public void ResourceFactory_ThrowsIfNull()
-        {
-            var options = new HalOptions();
-            Assert.Throws<ArgumentNullException>(() => options.ResourceFactory = null);
-        }
-
-        [Test]
-        public void ResourceFactory_GetSet()
-        {
-            var options = new HalOptions();
-            var factory = Mock.Of<IHalResourceFactoryMetadata>();
-            options.ResourceFactory = factory;
-            Assert.AreSame(factory, options.ResourceFactory);
-        }
-
-        [Test]
         public void ResourceInspectors_DefaultInitialized()
         {
             var options = new HalOptions();
@@ -66,21 +50,6 @@ namespace Tests
             var inspectors = Mock.Of<IList<IHalResourceInspectorMetadata>>();
             options.ResourceInspectors = inspectors;
             Assert.AreSame(inspectors, options.ResourceInspectors);
-        }
-
-        [Test]
-        public void UseDefaultResourceFactory_DefaultTrue()
-        {
-            var options = new HalOptions();
-            Assert.IsTrue(options.UseDefaultResourceFactory);
-        }
-
-        [Test]
-        public void UseDefaultResourceFactory_GetSet()
-        {
-            var options = new HalOptions();
-            options.UseDefaultResourceFactory = false;
-            Assert.IsFalse(options.UseDefaultResourceFactory);
         }
 
         [Test]

@@ -28,42 +28,12 @@ namespace Tests
         }
 
         [Test]
-        public void Configure_AddsDefaultResourceFactory()
+        public void Configure_UseDefaultResourceInspectorsFalse_DoesNotAddResourceInspectors()
         {
             var resourceFactory = ResourceFactory.Object;
             IConfigureOptions<HalOptions> setup = new HalSetup(ServiceProvider.Object, resourceFactory);
             var options = new HalOptions
             {
-                UseDefaultResourceFactory = true,
-                UseDefaultResourceInspectors = false
-            };
-
-            setup.Configure(options);
-            Assert.AreSame(resourceFactory, options.ResourceFactory);
-        }
-
-        [Test]
-        public void Configure_DoesNotAddDefaultResourceFactory()
-        {
-            IConfigureOptions<HalOptions> setup = new HalSetup(ServiceProvider.Object, ResourceFactory.Object);
-            var options = new HalOptions
-            {
-                UseDefaultResourceFactory = false,
-                UseDefaultResourceInspectors = false
-            };
-
-            setup.Configure(options);
-            Assert.IsNull(options.ResourceFactory);
-        }
-
-        [Test]
-        public void Configure_DoesNotAddResourceInspectors()
-        {
-            var resourceFactory = ResourceFactory.Object;
-            IConfigureOptions<HalOptions> setup = new HalSetup(ServiceProvider.Object, resourceFactory);
-            var options = new HalOptions
-            {
-                UseDefaultResourceFactory = false,
                 UseDefaultResourceInspectors = false
             };
 

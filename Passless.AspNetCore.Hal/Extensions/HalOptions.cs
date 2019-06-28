@@ -21,18 +21,8 @@ namespace Passless.AspNetCore.Hal.Extensions
                 ?? throw new ArgumentNullException(nameof(SupportedMediaTypes));
         }
 
-        private IHalResourceFactoryMetadata resourceFactory;
-        public IHalResourceFactoryMetadata ResourceFactory 
-        {
-            get => this.resourceFactory;
-            set => this.resourceFactory = value
-                ?? throw new ArgumentNullException(nameof(ResourceFactory));
-        }
-
         public IList<IHalResourceInspectorMetadata> ResourceInspectors { get; set; }
             = new List<IHalResourceInspectorMetadata>();
-
-        public bool UseDefaultResourceFactory { get; set; } = true;
 
         public bool UseDefaultResourceInspectors { get; set; } = true;
     }
