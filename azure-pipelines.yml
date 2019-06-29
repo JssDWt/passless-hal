@@ -20,8 +20,8 @@ steps:
   displayName: 'dotnet test'
 
 - script: |
-    dotnet tool install dotnet-reportgenerator-globaltool
-    ./reportgenerator -reports:$(Build.SourcesDirectory)/tests/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:"HtmlInline_AzurePipelines;Cobertura"
+    dotnet tool install dotnet-reportgenerator-globaltool --tool-path ./reportgenerator
+    ./reportgenerator/reportgenerator -reports:$(Build.SourcesDirectory)/tests/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/CodeCoverage -reporttypes:"HtmlInline_AzurePipelines;Cobertura"
   displayName: Create Code coverage report
 
 - task: PublishCodeCoverageResults@1
