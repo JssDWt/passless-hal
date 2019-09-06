@@ -1,1 +1,1 @@
-﻿
+﻿[![Build Status](https://dev.azure.com/passless/passless-hal/_apis/build/status/JssDWt.passless-hal?branchName=master)](https://dev.azure.com/passless/passless-hal/_build/latest?definitionId=9&branchName=master)
